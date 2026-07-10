@@ -12,48 +12,67 @@ import {
 
 
 
+
 // =======================
-// 要素取得
+// 要素
 // =======================
 
 const startBtn =
 document.getElementById("startBtn");
 
+
 const reader =
 document.getElementById("reader");
+
 
 const result =
 document.getElementById("result");
 
+
 const actions =
 document.getElementById("actions");
+
 
 const action1 =
 document.getElementById("action1");
 
+
 const action2 =
 document.getElementById("action2");
 
+
 const cancelBtn =
 document.getElementById("cancelBtn");
+
 
 const retryBtn =
 document.getElementById("retryBtn");
 
 
 
+
+
 // =======================
-// 設定
+// 変数
 // =======================
 
 let collectionName =
 "tickets_day1";
 
-let scanner = null;
 
-let currentId = null;
+let scanner =
+null;
 
-let isScanning = false;
+
+let currentId =
+null;
+
+
+let scanning =
+false;
+
+
+
 
 
 
@@ -63,15 +82,15 @@ let isScanning = false;
 
 document
 .querySelectorAll('input[name="day"]')
-.forEach(radio => {
+.forEach(input=>{
 
 
-    radio.addEventListener(
+    input.addEventListener(
         "change",
         ()=>{
 
             collectionName =
-            radio.value;
+            input.value;
 
         }
     );
@@ -82,27 +101,46 @@ document
 
 
 
+
+
+
+
 // =======================
 // スキャン開始
 // =======================
 
-startBtn.onclick = () => {
+startBtn.onclick = ()=>{
+
 
     startScanner();
+
 
 };
 
 
 
 
-// =======================
-// QRスキャン
-// =======================
+
+
 
 async function startScanner(){
 
 
+
+    if(scanning)
+    return;
+
+
+
+    scanning=true;
+
+
+
     startBtn.style.display =
+    "none";
+
+
+    result.style.display =
     "none";
 
 
@@ -114,24 +152,18 @@ async function startScanner(){
     "none";
 
 
-    result.style.display =
-    "none";
+
+    // カメラ表示
+
+    reader.style.visibility =
+    "visible";
 
 
-    reader.style.display =
-    "block";
+    reader.style.height =
+    "340px";
 
 
 
-    if(scanner){
-
-        try{
-
-            await scanner.clear();
-
-        }catch{}
-
-    }
 
 
 
@@ -140,29 +172,70 @@ async function startScanner(){
 
 
 
-    scanner.start(
-
-        {
-            facingMode:"environment"
-        },
 
 
-        {
-            fps:10,
-
-            qrbox:220
-        },
+    try{
 
 
-        qrSuccess,
+        await scanner.start(
+
+            {
+                facingMode:
+                "environment"
+            },
 
 
-        ()=>{}
+            {
 
-    );
+                fps:10,
+
+                qrbox:220
+
+            },
+
+
+            qrSuccess,
+
+
+            ()=>{}
+
+
+        );
+
+
+
+    }
+    catch(e){
+
+
+        console.error(e);
+
+
+
+        finishCamera();
+
+
+
+        result.style.display =
+        "block";
+
+
+        result.textContent =
+        "❌ カメラを起動できません";
+
+
+        retryBtn.style.display =
+        "block";
+
+
+    }
+
 
 
 }
+
+
+
 
 
 
@@ -175,11 +248,14 @@ async function startScanner(){
 async function qrSuccess(text){
 
 
-    if(isScanning)
+
+    if(!scanning)
     return;
 
 
-    isScanning=true;
+
+    scanning=false;
+
 
 
 
@@ -188,14 +264,19 @@ async function qrSuccess(text){
 
         await scanner.stop();
 
+
         await scanner.clear();
+
 
 
         scanner=null;
 
 
-        reader.style.display =
-        "none";
+
+
+        finishCamera();
+
+
 
 
         result.style.display =
@@ -208,17 +289,25 @@ async function qrSuccess(text){
 
 
 
-        const ref =
-        doc(
-            db,
-            collectionName,
-            currentId
+
+
+        const snap =
+        await getDoc(
+
+            doc(
+
+                db,
+
+                collectionName,
+
+                currentId
+
+            )
+
         );
 
 
 
-        const snap =
-        await getDoc(ref);
 
 
 
@@ -235,12 +324,18 @@ async function qrSuccess(text){
 
             return;
 
+
         }
+
+
+
 
 
 
         const data =
         snap.data();
+
+
 
 
 
@@ -251,9 +346,11 @@ async function qrSuccess(text){
         <br><br>
 
         現在：
-        ${convertStatus(data.status)}
+        ${statusText(data.status)}
 
         `;
+
+
 
 
 
@@ -268,19 +365,19 @@ async function qrSuccess(text){
         console.error(e);
 
 
+        finishCamera();
+
+
+        result.style.display =
+        "block";
+
+
         result.textContent =
         "❌ 読み取りエラー";
 
 
         retryBtn.style.display =
         "block";
-
-
-    }
-    finally{
-
-
-        isScanning=false;
 
 
     }
@@ -292,11 +389,27 @@ async function qrSuccess(text){
 
 
 
-// =======================
-// 状態文字変換
-// =======================
 
-function convertStatus(status){
+function finishCamera(){
+
+
+    reader.style.visibility =
+    "hidden";
+
+
+    reader.style.height =
+    "0";
+
+
+}
+
+
+
+
+
+
+
+function statusText(status){
 
 
     switch(status){
@@ -339,6 +452,7 @@ function showActions(status){
     action1.style.display =
     "block";
 
+
     action2.style.display =
     "block";
 
@@ -347,26 +461,29 @@ function showActions(status){
     action1.textContent =
     "";
 
+
     action2.textContent =
     "";
 
 
 
-    // 余白固定
+    action1.onclick =
+    null;
+
+
+    action2.onclick =
+    null;
+
+
+
+    // 隙間固定
 
     action1.style.marginBottom =
     "12px";
 
+
     action2.style.marginBottom =
     "12px";
-
-
-
-    // イベント解除
-
-    action1.onclick = null;
-
-    action2.onclick = null;
 
 
 
@@ -375,8 +492,6 @@ function showActions(status){
     switch(status){
 
 
-
-        // 受付前
 
         case "waiting":
 
@@ -409,9 +524,6 @@ function showActions(status){
 
 
 
-
-
-        // 入場前
 
         case "before":
 
@@ -450,7 +562,6 @@ function showActions(status){
             };
 
 
-
             break;
 
 
@@ -459,8 +570,6 @@ function showActions(status){
 
 
 
-
-        // 入場済み
 
         case "entered":
 
@@ -499,16 +608,15 @@ function showActions(status){
             };
 
 
-
             break;
-
 
 
     }
 
 
-
 }
+
+
 
 
 
@@ -530,9 +638,13 @@ async function updateStatus(nextStatus){
         await updateDoc(
 
             doc(
+
                 db,
+
                 collectionName,
+
                 currentId
+
             ),
 
 
@@ -545,6 +657,8 @@ async function updateStatus(nextStatus){
 
 
         );
+
+
 
 
 
@@ -563,6 +677,7 @@ async function updateStatus(nextStatus){
 
 
 
+
         setTimeout(()=>{
 
 
@@ -578,7 +693,6 @@ async function updateStatus(nextStatus){
     catch(e){
 
 
-
         console.error(e);
 
 
@@ -587,13 +701,11 @@ async function updateStatus(nextStatus){
         "❌ 更新失敗";
 
 
-
         retryBtn.style.display =
         "block";
 
 
     }
-
 
 
 }
@@ -622,20 +734,8 @@ async function reset(){
     "none";
 
 
-
     retryBtn.style.display =
     "none";
-
-
-
-    result.style.display =
-    "block";
-
-
-
-    result.textContent =
-    "QRコードを読み取ってください";
-
 
 
     startBtn.style.display =
@@ -643,8 +743,18 @@ async function reset(){
 
 
 
-    reader.style.display =
-    "none";
+    result.style.display =
+    "block";
+
+
+    result.textContent =
+    "QRコードを読み取ってください";
+
+
+
+    finishCamera();
+
+
 
 
 
@@ -664,6 +774,7 @@ async function reset(){
 
 
     }
+
 
 
 }
@@ -692,10 +803,8 @@ cancelBtn.onclick = ()=>{
 
 
 
-
-
 // =======================
-// もう一度スキャン
+// 再スキャン
 // =======================
 
 retryBtn.onclick = ()=>{
@@ -710,8 +819,7 @@ retryBtn.onclick = ()=>{
         startScanner();
 
 
-    },100);
-
+    },200);
 
 
 };

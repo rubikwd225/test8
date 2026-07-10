@@ -27,7 +27,6 @@ body{
 
 
 
-
 h1{
 
     font-size:40px;
@@ -87,7 +86,7 @@ h1{
 
 
 
-/* 共通ボタン */
+/* ボタン共通 */
 
 button{
 
@@ -123,6 +122,8 @@ button:hover{
 
 
 
+
+
 /* スキャン開始 */
 
 #startBtn{
@@ -139,27 +140,30 @@ button:hover{
 
 
 
+
+
 /* カメラ */
 
 #reader{
-
-    display:none;
 
     width:340px;
 
     max-width:90vw;
 
-    aspect-ratio:1;
+    height:0;
+
+    visibility:hidden;
+
+    overflow:hidden;
 
     background:black;
 
     border-radius:18px;
 
-    overflow:hidden;
-
     margin-bottom:20px;
 
 }
+
 
 
 
@@ -211,7 +215,6 @@ button:hover{
 
 
 
-
 #result span{
 
     font-size:42px;
@@ -228,7 +231,7 @@ button:hover{
 
 
 
-/* 操作ボタン */
+/* 操作エリア */
 
 #actions{
 
@@ -253,6 +256,7 @@ button:hover{
     margin-bottom:12px;
 
 }
+
 
 
 
@@ -294,7 +298,6 @@ button:hover{
 
 
 
-/* 再スキャン */
 
 #retryBtn{
 
@@ -319,6 +322,7 @@ button:disabled{
     opacity:.5;
 
 }
+
 
 
 
