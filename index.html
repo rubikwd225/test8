@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QR CHECK</title>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <link rel="stylesheet" href="admin.css">
+
+</head>
+
+
+<body>
+
+
+<h1>QR CHECK</h1>
+
+
+<div id="daySelect">
+
+    <label>
+        <input type="radio" name="day" value="tickets_day1" checked>
+        1日目
+    </label>
+
+    <label>
+        <input type="radio" name="day" value="tickets_day2">
+        2日目
+    </label>
+
+</div>
+
+
+
+<button id="startBtn">
+    スキャン開始
+</button>
+
+
+
+<div id="scannerBox">
+
+    <div id="reader"></div>
+
+</div>
+
+
+
+<div id="result">
+    QRコードを読み取ってください
+</div>
+
+
+
+<div id="actions">
+
+    <button id="action1"></button>
+
+    <button id="action2"></button>
+
+    <button id="cancelBtn">
+        キャンセル
+    </button>
+
+</div>
+
+
+
+<button id="retryBtn">
+    もう一度スキャン
+</button>
+
+
+
+<script type="module" src="admin.js"></script>
+
+
+</body>
+
+</html>
