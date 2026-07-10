@@ -1,32 +1,26 @@
 *{
-
-margin:0;
-padding:0;
-box-sizing:border-box;
-
-font-family:
-"Yu Gothic",
-"Meiryo",
-sans-serif;
-
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Yu Gothic","Meiryo",sans-serif;
 }
 
 
 body{
 
-background:#0f0f10;
+    background:#0f0f10;
 
-color:white;
+    color:white;
 
-display:flex;
+    display:flex;
 
-flex-direction:column;
+    flex-direction:column;
 
-align-items:center;
+    align-items:center;
 
-padding:25px;
+    min-height:100vh;
 
-min-height:100vh;
+    padding:25px;
 
 }
 
@@ -34,190 +28,333 @@ min-height:100vh;
 
 h1{
 
-font-size:40px;
+    font-size:40px;
 
-letter-spacing:4px;
+    letter-spacing:4px;
 
-margin-bottom:25px;
+    margin-bottom:25px;
 
 }
 
 
+
+
+
+/* 日付選択 */
 
 #daySelect{
 
-background:#1b1b1d;
+    display:flex;
 
-padding:15px 25px;
+    gap:25px;
 
-border-radius:15px;
+    background:#1b1b1d;
 
-display:flex;
+    padding:15px 25px;
 
-gap:25px;
+    border-radius:14px;
 
-margin-bottom:20px;
+    border:1px solid #333;
+
+    margin-bottom:20px;
 
 }
 
 
+
+#daySelect label{
+
+    font-size:18px;
+
+    cursor:pointer;
+
+}
+
+
+
+#daySelect input{
+
+    transform:scale(1.2);
+
+    margin-right:8px;
+
+}
+
+
+
+
+
+/* ボタン共通 */
 
 button{
 
-width:340px;
+    width:340px;
 
-max-width:90vw;
+    max-width:90vw;
 
-padding:17px;
+    padding:17px;
 
-border:none;
+    border:none;
 
-border-radius:14px;
+    border-radius:14px;
 
-font-size:18px;
+    font-size:18px;
 
-font-weight:bold;
+    font-weight:bold;
 
-cursor:pointer;
+    cursor:pointer;
+
+    transition:.2s;
 
 }
 
 
+
+button:hover{
+
+    transform:scale(1.03);
+
+}
+
+
+
+
+
+
+/* スキャン開始 */
 
 #startBtn{
 
-background:white;
+    background:white;
 
-color:black;
+    color:#111;
+
+    margin-bottom:20px;
 
 }
 
 
+
+
+
+/* カメラ */
 
 #scannerBox{
 
-display:none;
+    display:none;
 
-width:340px;
+    width:340px;
 
-max-width:90vw;
+    max-width:90vw;
 
-aspect-ratio:1;
+    aspect-ratio:1;
 
-margin-top:20px;
+    background:black;
 
-overflow:hidden;
+    border-radius:18px;
 
-border-radius:18px;
+    overflow:hidden;
 
-background:black;
+    margin-bottom:20px;
 
 }
+
+
 
 
 
 #reader{
 
-width:100%;
+    width:100%;
 
-height:100%;
+    height:100%;
 
 }
+
+
 
 
 
 #reader video{
 
-width:100%!important;
+    width:100%!important;
 
-height:100%!important;
+    height:100%!important;
 
-object-fit:cover;
+    object-fit:cover;
 
 }
 
 
 
 
+
+/* 結果 */
 
 #result{
 
-width:340px;
+    width:340px;
 
-max-width:90vw;
+    max-width:90vw;
 
-background:#1b1b1d;
+    min-height:110px;
 
-border-radius:15px;
+    background:#1b1b1d;
 
-padding:20px;
+    border:1px solid #333;
 
-margin-top:20px;
+    border-radius:16px;
 
-text-align:center;
+    padding:20px;
 
-font-size:22px;
+    text-align:center;
 
-line-height:1.8;
+    font-size:22px;
+
+    line-height:1.8;
+
+    margin-bottom:15px;
 
 }
 
 
+
+
+
+#result span{
+
+    font-size:42px;
+
+    font-weight:bold;
+
+    color:#00d4ff;
+
+}
+
+
+
+
+
+/* 操作ボタン */
 
 #actions{
 
-display:none;
+    display:none;
 
-width:340px;
+    width:340px;
 
-max-width:90vw;
-
-margin-top:15px;
+    max-width:90vw;
 
 }
+
+
+
+
+
+#actions button{
+
+    display:block;
+
+    width:100%;
+
+    margin-bottom:12px;
+
+}
+
+
 
 
 
 #action1{
 
-background:#00c853;
+    background:#00c853;
 
-color:white;
+    color:white;
 
 }
+
+
 
 
 
 #action2{
 
-background:#ff9800;
+    background:#ff9800;
 
-color:white;
+    color:white;
 
 }
+
+
 
 
 
 #cancelBtn{
 
-background:#f44336;
+    background:#f44336;
 
-color:white;
-
-margin-top:10px;
+    color:white;
 
 }
 
 
 
+
+
+/* 再スキャン */
+
 #retryBtn{
 
-display:none;
+    display:none;
 
-background:#2196f3;
+    background:#2196f3;
 
-color:white;
+    color:white;
 
-margin-top:15px;
+    margin-top:5px;
+
+}
+
+
+
+
+
+button:disabled{
+
+    opacity:.5;
+
+}
+
+
+
+
+
+/* スマホ */
+
+@media(max-width:500px){
+
+
+    body{
+
+        padding:15px;
+
+    }
+
+
+    h1{
+
+        font-size:32px;
+
+    }
+
+
+    #daySelect{
+
+        gap:15px;
+
+        padding:12px 18px;
+
+    }
+
 
 }
