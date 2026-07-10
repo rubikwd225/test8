@@ -227,3 +227,30 @@ button:hover{
     }
 
 }
+
+#stopBtn{
+
+    display:none;
+
+    width:340px;
+    max-width:90vw;
+
+    margin:16px 0;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#616161;
+
+    color:#fff;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
