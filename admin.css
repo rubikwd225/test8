@@ -20,9 +20,11 @@ body{
 
     min-height:100vh;
 
-    padding:25px;
+    padding:30px;
 
 }
+
+
 
 
 
@@ -56,7 +58,7 @@ h1{
 
     border:1px solid #333;
 
-    margin-bottom:20px;
+    margin-bottom:25px;
 
 }
 
@@ -84,7 +86,8 @@ h1{
 
 
 
-/* ボタン共通 */
+
+/* 共通ボタン */
 
 button{
 
@@ -92,7 +95,7 @@ button{
 
     max-width:90vw;
 
-    padding:17px;
+    padding:16px;
 
     border:none;
 
@@ -120,7 +123,6 @@ button:hover{
 
 
 
-
 /* スキャン開始 */
 
 #startBtn{
@@ -139,7 +141,7 @@ button:hover{
 
 /* カメラ */
 
-#scannerBox{
+#reader{
 
     display:none;
 
@@ -163,18 +165,6 @@ button:hover{
 
 
 
-#reader{
-
-    width:100%;
-
-    height:100%;
-
-}
-
-
-
-
-
 #reader video{
 
     width:100%!important;
@@ -184,6 +174,7 @@ button:hover{
     object-fit:cover;
 
 }
+
 
 
 
@@ -230,6 +221,8 @@ button:hover{
     color:#00d4ff;
 
 }
+
+
 
 
 
@@ -319,6 +312,8 @@ button:hover{
 
 
 
+
+
 button:disabled{
 
     opacity:.5;
@@ -329,7 +324,6 @@ button:disabled{
 
 
 
-/* スマホ */
 
 @media(max-width:500px){
 
@@ -341,20 +335,13 @@ button:disabled{
     }
 
 
+
     h1{
 
         font-size:32px;
 
     }
 
-
-    #daySelect{
-
-        gap:15px;
-
-        padding:12px 18px;
-
-    }
 
 
 }
