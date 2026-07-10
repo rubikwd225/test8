@@ -14,36 +14,29 @@ import {
 
 
 // =======================
-// 要素
+// Elements
 // =======================
 
 const startBtn =
 document.getElementById("startBtn");
 
-
 const reader =
 document.getElementById("reader");
-
 
 const result =
 document.getElementById("result");
 
-
 const actions =
 document.getElementById("actions");
-
 
 const action1 =
 document.getElementById("action1");
 
-
 const action2 =
 document.getElementById("action2");
 
-
 const cancelBtn =
 document.getElementById("cancelBtn");
-
 
 const retryBtn =
 document.getElementById("retryBtn");
@@ -53,31 +46,23 @@ document.getElementById("retryBtn");
 
 
 // =======================
-// 変数
+// Variables
 // =======================
 
-let collectionName =
-"tickets_day1";
+let collectionName = "tickets_day1";
 
+let scanner = null;
 
-let scanner =
-null;
+let currentId = null;
 
-
-let currentId =
-null;
-
-
-let scanning =
-false;
-
+let scanning = false;
 
 
 
 
 
 // =======================
-// 日付変更
+// Day change
 // =======================
 
 document
@@ -104,20 +89,15 @@ document
 
 
 
-
 // =======================
-// スキャン開始
+// Start scanner
 // =======================
 
 startBtn.onclick = ()=>{
 
-
     startScanner();
 
-
 };
-
-
 
 
 
@@ -126,21 +106,15 @@ startBtn.onclick = ()=>{
 async function startScanner(){
 
 
-
     if(scanning)
     return;
 
 
-
-    scanning=true;
+    scanning = true;
 
 
 
     startBtn.style.display =
-    "none";
-
-
-    result.style.display =
     "none";
 
 
@@ -152,16 +126,17 @@ async function startScanner(){
     "none";
 
 
+    result.style.display =
+    "none";
 
-    // カメラ表示
+
 
     reader.style.visibility =
     "visible";
 
 
     reader.style.height =
-    "340px";
-
+    "auto";
 
 
 
@@ -174,10 +149,12 @@ async function startScanner(){
 
 
 
+
     try{
 
 
         await scanner.start(
+
 
             {
                 facingMode:
@@ -185,11 +162,36 @@ async function startScanner(){
             },
 
 
+
             {
 
                 fps:10,
 
-                qrbox:220
+
+                qrbox:
+                function(width,height){
+
+
+                    const size =
+                    Math.floor(
+                        Math.min(
+                            width,
+                            height
+                        ) * 0.7
+                    );
+
+
+
+                    return {
+
+                        width:size,
+
+                        height:size
+
+                    };
+
+
+                }
 
             },
 
@@ -200,8 +202,8 @@ async function startScanner(){
             ()=>{}
 
 
-        );
 
+        );
 
 
     }
@@ -211,8 +213,7 @@ async function startScanner(){
         console.error(e);
 
 
-
-        finishCamera();
+        stopCamera();
 
 
 
@@ -239,10 +240,8 @@ async function startScanner(){
 
 
 
-
-
 // =======================
-// QR成功
+// QR success
 // =======================
 
 async function qrSuccess(text){
@@ -253,9 +252,7 @@ async function qrSuccess(text){
     return;
 
 
-
     scanning=false;
-
 
 
 
@@ -273,8 +270,7 @@ async function qrSuccess(text){
 
 
 
-
-        finishCamera();
+        stopCamera();
 
 
 
@@ -286,8 +282,6 @@ async function qrSuccess(text){
 
         currentId =
         text;
-
-
 
 
 
@@ -305,7 +299,6 @@ async function qrSuccess(text){
             )
 
         );
-
 
 
 
@@ -330,11 +323,8 @@ async function qrSuccess(text){
 
 
 
-
-
         const data =
         snap.data();
-
 
 
 
@@ -352,8 +342,6 @@ async function qrSuccess(text){
 
 
 
-
-
         showActions(data.status);
 
 
@@ -365,11 +353,7 @@ async function qrSuccess(text){
         console.error(e);
 
 
-        finishCamera();
-
-
-        result.style.display =
-        "block";
+        stopCamera();
 
 
         result.textContent =
@@ -390,7 +374,7 @@ async function qrSuccess(text){
 
 
 
-function finishCamera(){
+function stopCamera(){
 
 
     reader.style.visibility =
@@ -402,8 +386,6 @@ function finishCamera(){
 
 
 }
-
-
 
 
 
@@ -436,7 +418,7 @@ function statusText(status){
 
 }
 // =======================
-// ボタン表示
+// Action buttons
 // =======================
 
 function showActions(status){
@@ -473,19 +455,6 @@ function showActions(status){
 
     action2.onclick =
     null;
-
-
-
-    // 隙間固定
-
-    action1.style.marginBottom =
-    "12px";
-
-
-    action2.style.marginBottom =
-    "12px";
-
-
 
 
 
@@ -533,7 +502,6 @@ function showActions(status){
             "入場済みにする";
 
 
-
             action2.textContent =
             "受付前に戻す";
 
@@ -579,7 +547,6 @@ function showActions(status){
             "入場前に戻す";
 
 
-
             action2.textContent =
             "受付前に戻す";
 
@@ -611,7 +578,9 @@ function showActions(status){
             break;
 
 
+
     }
+
 
 
 }
@@ -623,8 +592,9 @@ function showActions(status){
 
 
 
+
 // =======================
-// 状態更新
+// Update Firestore
 // =======================
 
 async function updateStatus(nextStatus){
@@ -636,6 +606,7 @@ async function updateStatus(nextStatus){
 
 
         await updateDoc(
+
 
             doc(
 
@@ -667,13 +638,14 @@ async function updateStatus(nextStatus){
 
 
 
+        retryBtn.style.display =
+        "none";
+
+
+
         result.innerHTML =
         "✅ 更新しました";
 
-
-
-        retryBtn.style.display =
-        "none";
 
 
 
@@ -691,6 +663,7 @@ async function updateStatus(nextStatus){
 
     }
     catch(e){
+
 
 
         console.error(e);
@@ -717,8 +690,9 @@ async function updateStatus(nextStatus){
 
 
 
+
 // =======================
-// リセット
+// Reset
 // =======================
 
 async function reset(){
@@ -738,6 +712,7 @@ async function reset(){
     "none";
 
 
+
     startBtn.style.display =
     "block";
 
@@ -752,7 +727,7 @@ async function reset(){
 
 
 
-    finishCamera();
+    stopCamera();
 
 
 
@@ -763,7 +738,9 @@ async function reset(){
 
         try{
 
+
             await scanner.clear();
+
 
         }
         catch{}
@@ -787,7 +764,7 @@ async function reset(){
 
 
 // =======================
-// キャンセル
+// Cancel
 // =======================
 
 cancelBtn.onclick = ()=>{
@@ -803,8 +780,9 @@ cancelBtn.onclick = ()=>{
 
 
 
+
 // =======================
-// 再スキャン
+// Retry
 // =======================
 
 retryBtn.onclick = ()=>{
@@ -813,10 +791,12 @@ retryBtn.onclick = ()=>{
     reset();
 
 
+
     setTimeout(()=>{
 
 
         startScanner();
+
 
 
     },200);
