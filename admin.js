@@ -1,181 +1,165 @@
+// =======================
+// Firebase
+// =======================
+
 import { db } from "./firebase.js";
 
-
 import {
-
-doc,
-getDoc,
-updateDoc
-
+    doc,
+    getDoc,
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 
 
+// =======================
+// 要素取得
+// =======================
+
 const startBtn =
 document.getElementById("startBtn");
-
-
-const scannerBox =
-document.getElementById("scannerBox");
-
 
 const reader =
 document.getElementById("reader");
 
-
 const result =
 document.getElementById("result");
-
 
 const actions =
 document.getElementById("actions");
 
-
 const action1 =
 document.getElementById("action1");
-
 
 const action2 =
 document.getElementById("action2");
 
-
 const cancelBtn =
 document.getElementById("cancelBtn");
-
 
 const retryBtn =
 document.getElementById("retryBtn");
 
 
-const radios =
-document.querySelectorAll(
-'input[name="day"]'
-);
 
-
-
+// =======================
+// 設定
+// =======================
 
 let collectionName =
 "tickets_day1";
 
+let scanner = null;
 
-let scanner=null;
+let currentId = null;
 
-let currentId=null;
-
-let processing=false;
-
+let isScanning = false;
 
 
 
-radios.forEach(radio=>{
+// =======================
+// 日付変更
+// =======================
+
+document
+.querySelectorAll('input[name="day"]')
+.forEach(radio => {
 
 
-radio.addEventListener("change",()=>{
+    radio.addEventListener(
+        "change",
+        ()=>{
 
+            collectionName =
+            radio.value;
 
-collectionName =
-radio.value;
+        }
+    );
 
 
 });
 
 
-});
 
 
+// =======================
+// スキャン開始
+// =======================
 
+startBtn.onclick = () => {
 
-
-startBtn.onclick=()=>{
-
-
-startScanner();
-
+    startScanner();
 
 };
 
 
 
 
-
-
+// =======================
+// QRスキャン
+// =======================
 
 async function startScanner(){
 
 
-
-startBtn.style.display="none";
-
-
-result.style.display="none";
+    startBtn.style.display =
+    "none";
 
 
-scannerBox.style.display="block";
+    actions.style.display =
+    "none";
 
 
+    retryBtn.style.display =
+    "none";
 
-if(scanner){
+
+    result.style.display =
+    "none";
 
 
-try{
-
-await scanner.clear();
-
-}catch{}
-
-}
+    reader.style.display =
+    "block";
 
 
 
-scanner =
-new Html5Qrcode("reader");
+    if(scanner){
+
+        try{
+
+            await scanner.clear();
+
+        }catch{}
+
+    }
 
 
 
-
-scanner.start(
-
-
-{
-facingMode:"environment"
-},
-
-
-{
-
-fps:10,
-
-
-qrbox:(width,height)=>{
-
-
-const size =
-Math.min(width,height)*0.7;
-
-
-return {
-
-width:size,
-
-height:size
-
-};
-
-
-}
-
-},
-
-
-scanSuccess,
-
-
-()=>{}
+    scanner =
+    new Html5Qrcode("reader");
 
 
 
-);
+    scanner.start(
+
+        {
+            facingMode:"environment"
+        },
+
+
+        {
+            fps:10,
+
+            qrbox:220
+        },
+
+
+        qrSuccess,
+
+
+        ()=>{}
+
+    );
 
 
 }
@@ -184,73 +168,122 @@ scanSuccess,
 
 
 
+// =======================
+// QR成功
+// =======================
+
+async function qrSuccess(text){
+
+
+    if(isScanning)
+    return;
+
+
+    isScanning=true;
 
 
 
-
-async function scanSuccess(text){
-
-
-if(processing)
-return;
+    try{
 
 
-processing=true;
+        await scanner.stop();
+
+        await scanner.clear();
 
 
-
-try{
-
-
-await scanner.stop();
+        scanner=null;
 
 
-await scanner.clear();
+        reader.style.display =
+        "none";
+
+
+        result.style.display =
+        "block";
 
 
 
-scanner=null;
-
-
-scannerBox.style.display="none";
-
-
-result.style.display="block";
+        currentId =
+        text;
 
 
 
-currentId=text;
+        const ref =
+        doc(
+            db,
+            collectionName,
+            currentId
+        );
 
 
 
-
-const snap =
-await getDoc(
-
-doc(
-db,
-collectionName,
-currentId
-)
-
-);
+        const snap =
+        await getDoc(ref);
 
 
 
+        if(!snap.exists()){
 
 
-if(!snap.exists()){
+            result.textContent =
+            "❌ 整理券が見つかりません";
+
+
+            retryBtn.style.display =
+            "block";
+
+
+            return;
+
+        }
 
 
 
-result.textContent =
-"❌ 整理券が見つかりません";
+        const data =
+        snap.data();
 
 
-retryBtn.style.display="block";
+
+        result.innerHTML = `
+
+        No.${data.number}
+
+        <br><br>
+
+        現在：
+        ${convertStatus(data.status)}
+
+        `;
 
 
-return;
+
+        showActions(data.status);
+
+
+
+    }
+    catch(e){
+
+
+        console.error(e);
+
+
+        result.textContent =
+        "❌ 読み取りエラー";
+
+
+        retryBtn.style.display =
+        "block";
+
+
+    }
+    finally{
+
+
+        isScanning=false;
+
+
+    }
 
 
 }
@@ -259,295 +292,426 @@ return;
 
 
 
-const data =
-snap.data();
+// =======================
+// 状態文字変換
+// =======================
+
+function convertStatus(status){
 
 
-
-result.innerHTML=`
-
-No.${data.number}
-
-<br><br>
-
-現在：
-${statusText(data.status)}
-
-`;
+    switch(status){
 
 
-
-showActions(data.status);
-
-
+        case "waiting":
+            return "受付前";
 
 
-}
-catch(e){
+        case "before":
+            return "入場前";
 
 
-console.error(e);
+        case "entered":
+            return "入場済み";
 
 
-result.textContent =
-"❌ 読み取りエラー";
+        default:
+            return "不明";
 
 
-retryBtn.style.display="block";
+    }
 
 
 }
-finally{
-
-
-processing=false;
-
-
-}
-
-
-}
-
-
-
-
-
-
-function statusText(status){
-
-
-if(status==="waiting")
-return "受付前";
-
-
-if(status==="before")
-return "入場前";
-
-
-if(status==="entered")
-return "入場済み";
-
-
-return "不明";
-
-
-}
-
-
-
-
-
-
+// =======================
+// ボタン表示
+// =======================
 
 function showActions(status){
 
 
-
-actions.style.display="block";
-
-
-
-if(status==="waiting"){
-
-
-action1.textContent =
-"受付済みにする";
-
-
-action2.style.display="none";
+    actions.style.display =
+    "block";
 
 
 
-action1.onclick=()=>{
+    // 完全リセット
 
-updateStatus("before");
+    action1.style.display =
+    "block";
+
+    action2.style.display =
+    "block";
+
+
+
+    action1.textContent =
+    "";
+
+    action2.textContent =
+    "";
+
+
+
+    // 余白固定
+
+    action1.style.marginBottom =
+    "12px";
+
+    action2.style.marginBottom =
+    "12px";
+
+
+
+    // イベント解除
+
+    action1.onclick = null;
+
+    action2.onclick = null;
+
+
+
+
+
+    switch(status){
+
+
+
+        // 受付前
+
+        case "waiting":
+
+
+
+            action1.textContent =
+            "受付済みにする";
+
+
+
+            action2.style.display =
+            "none";
+
+
+
+            action1.onclick = ()=>{
+
+
+                updateStatus(
+                    "before"
+                );
+
+
+            };
+
+
+            break;
+
+
+
+
+
+
+
+        // 入場前
+
+        case "before":
+
+
+
+            action1.textContent =
+            "入場済みにする";
+
+
+
+            action2.textContent =
+            "受付前に戻す";
+
+
+
+            action1.onclick = ()=>{
+
+
+                updateStatus(
+                    "entered"
+                );
+
+
+            };
+
+
+
+            action2.onclick = ()=>{
+
+
+                updateStatus(
+                    "waiting"
+                );
+
+
+            };
+
+
+
+            break;
+
+
+
+
+
+
+
+
+        // 入場済み
+
+        case "entered":
+
+
+
+            action1.textContent =
+            "入場前に戻す";
+
+
+
+            action2.textContent =
+            "受付前に戻す";
+
+
+
+            action1.onclick = ()=>{
+
+
+                updateStatus(
+                    "before"
+                );
+
+
+            };
+
+
+
+            action2.onclick = ()=>{
+
+
+                updateStatus(
+                    "waiting"
+                );
+
+
+            };
+
+
+
+            break;
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+// =======================
+// 状態更新
+// =======================
+
+async function updateStatus(nextStatus){
+
+
+
+    try{
+
+
+
+        await updateDoc(
+
+            doc(
+                db,
+                collectionName,
+                currentId
+            ),
+
+
+            {
+
+                status:
+                nextStatus
+
+            }
+
+
+        );
+
+
+
+        actions.style.display =
+        "none";
+
+
+
+        result.innerHTML =
+        "✅ 更新しました";
+
+
+
+        retryBtn.style.display =
+        "none";
+
+
+
+        setTimeout(()=>{
+
+
+            reset();
+
+
+        },1000);
+
+
+
+
+    }
+    catch(e){
+
+
+
+        console.error(e);
+
+
+
+        result.innerHTML =
+        "❌ 更新失敗";
+
+
+
+        retryBtn.style.display =
+        "block";
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+// =======================
+// リセット
+// =======================
+
+async function reset(){
+
+
+
+    currentId =
+    null;
+
+
+
+    actions.style.display =
+    "none";
+
+
+
+    retryBtn.style.display =
+    "none";
+
+
+
+    result.style.display =
+    "block";
+
+
+
+    result.textContent =
+    "QRコードを読み取ってください";
+
+
+
+    startBtn.style.display =
+    "block";
+
+
+
+    reader.style.display =
+    "none";
+
+
+
+    if(scanner){
+
+
+        try{
+
+            await scanner.clear();
+
+        }
+        catch{}
+
+
+
+        scanner=null;
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+// =======================
+// キャンセル
+// =======================
+
+cancelBtn.onclick = ()=>{
+
+
+    reset();
+
 
 };
 
 
-}
 
 
 
 
-if(status==="before"){
 
 
-action1.textContent =
-"入場済みにする";
+// =======================
+// もう一度スキャン
+// =======================
 
+retryBtn.onclick = ()=>{
 
-action2.style.display="block";
 
+    reset();
 
-action2.textContent =
-"受付前に戻す";
 
+    setTimeout(()=>{
 
 
-action1.onclick=()=>{
+        startScanner();
 
-updateStatus("entered");
 
-};
+    },100);
 
-
-
-action2.onclick=()=>{
-
-updateStatus("waiting");
-
-};
-
-
-}
-
-
-
-
-if(status==="entered"){
-
-
-action1.textContent =
-"入場前に戻す";
-
-
-action2.style.display="block";
-
-
-action2.textContent =
-"受付前に戻す";
-
-
-
-action1.onclick=()=>{
-
-updateStatus("before");
-
-};
-
-
-action2.onclick=()=>{
-
-updateStatus("waiting");
-
-};
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-async function updateStatus(status){
-
-
-
-await updateDoc(
-
-doc(
-db,
-collectionName,
-currentId
-),
-
-{
-
-status:status
-
-}
-
-);
-
-
-
-actions.style.display="none";
-
-
-result.textContent =
-"✅ 更新しました";
-
-
-
-setTimeout(()=>{
-
-
-reset();
-
-
-},1000);
-
-
-
-}
-
-
-
-
-
-
-
-
-function reset(){
-
-
-
-currentId=null;
-
-
-scannerBox.style.display="none";
-
-
-result.style.display="block";
-
-
-result.textContent =
-"QRコードを読み取ってください";
-
-
-actions.style.display="none";
-
-
-retryBtn.style.display="none";
-
-
-startBtn.style.display="block";
-
-
-
-}
-
-
-
-
-
-
-
-cancelBtn.onclick=()=>{
-
-
-reset();
-
-
-};
-
-
-
-
-
-retryBtn.onclick=()=>{
-
-
-reset();
-
-
-startScanner();
 
 
 };
