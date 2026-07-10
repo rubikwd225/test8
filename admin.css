@@ -1,33 +1,32 @@
 *{
 
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 
-    font-family:
-    "Yu Gothic",
-    "Meiryo",
-    sans-serif;
+font-family:
+"Yu Gothic",
+"Meiryo",
+sans-serif;
 
 }
 
 
-
 body{
 
-    background:#0f0f10;
+background:#0f0f10;
 
-    color:white;
+color:white;
 
-    display:flex;
+display:flex;
 
-    flex-direction:column;
+flex-direction:column;
 
-    align-items:center;
+align-items:center;
 
-    min-height:100vh;
+padding:25px;
 
-    padding:20px;
+min-height:100vh;
 
 }
 
@@ -35,11 +34,11 @@ body{
 
 h1{
 
-    font-size:38px;
+font-size:40px;
 
-    letter-spacing:4px;
+letter-spacing:4px;
 
-    margin-bottom:25px;
+margin-bottom:25px;
 
 }
 
@@ -47,25 +46,17 @@ h1{
 
 #daySelect{
 
-    display:flex;
+background:#1b1b1d;
 
-    gap:25px;
+padding:15px 25px;
 
-    background:#1b1b1d;
+border-radius:15px;
 
-    padding:15px 25px;
+display:flex;
 
-    border-radius:14px;
+gap:25px;
 
-    margin-bottom:20px;
-
-}
-
-
-
-label{
-
-    font-size:18px;
+margin-bottom:20px;
 
 }
 
@@ -73,17 +64,21 @@ label{
 
 button{
 
-    border:none;
+width:340px;
 
-    border-radius:14px;
+max-width:90vw;
 
-    font-size:18px;
+padding:17px;
 
-    font-weight:bold;
+border:none;
 
-    padding:16px;
+border-radius:14px;
 
-    cursor:pointer;
+font-size:18px;
+
+font-weight:bold;
+
+cursor:pointer;
 
 }
 
@@ -91,13 +86,9 @@ button{
 
 #startBtn{
 
-    width:320px;
+background:white;
 
-    background:white;
-
-    color:#111;
-
-    margin-bottom:20px;
+color:black;
 
 }
 
@@ -105,21 +96,21 @@ button{
 
 #scannerBox{
 
-    display:none;
+display:none;
 
-    width:340px;
+width:340px;
 
-    max-width:90vw;
+max-width:90vw;
 
-    aspect-ratio:1;
+aspect-ratio:1;
 
-    overflow:hidden;
+margin-top:20px;
 
-    border-radius:18px;
+overflow:hidden;
 
-    background:#000;
+border-radius:18px;
 
-    margin-bottom:20px;
+background:black;
 
 }
 
@@ -127,69 +118,47 @@ button{
 
 #reader{
 
-    width:100%;
+width:100%;
 
-    height:100%;
+height:100%;
 
 }
 
 
-
-/* カメラ映像 */
 
 #reader video{
 
-    width:100%!important;
+width:100%!important;
 
-    height:100%!important;
+height:100%!important;
 
-    object-fit:cover;
-
-    border-radius:18px;
+object-fit:cover;
 
 }
 
 
-
-/* html5-qrcodeの余計な枠 */
-
-#reader__scan_region{
-
-    width:100%!important;
-
-}
-
-
-
-#reader__dashboard{
-
-    display:none!important;
-
-}
 
 
 
 #result{
 
-    width:340px;
+width:340px;
 
-    max-width:90vw;
+max-width:90vw;
 
-    min-height:110px;
+background:#1b1b1d;
 
-    background:#1b1b1d;
+border-radius:15px;
 
-    border:1px solid #333;
+padding:20px;
 
-    border-radius:16px;
+margin-top:20px;
 
-    padding:20px;
+text-align:center;
 
-    text-align:center;
+font-size:22px;
 
-    font-size:22px;
-
-    line-height:1.8;
+line-height:1.8;
 
 }
 
@@ -197,26 +166,13 @@ button{
 
 #actions{
 
-    display:none;
+display:none;
 
-    width:340px;
+width:340px;
 
-    max-width:90vw;
+max-width:90vw;
 
-}
-
-
-
-#action1,
-#action2,
-#cancelBtn,
-#retryBtn{
-
-    width:100%;
-
-    margin-top:12px;
-
-    color:white;
+margin-top:15px;
 
 }
 
@@ -224,7 +180,9 @@ button{
 
 #action1{
 
-    background:#00c853;
+background:#00c853;
+
+color:white;
 
 }
 
@@ -232,7 +190,9 @@ button{
 
 #action2{
 
-    background:#ff9800;
+background:#ff9800;
+
+color:white;
 
 }
 
@@ -240,7 +200,11 @@ button{
 
 #cancelBtn{
 
-    background:#f44336;
+background:#f44336;
+
+color:white;
+
+margin-top:10px;
 
 }
 
@@ -248,10 +212,12 @@ button{
 
 #retryBtn{
 
-    display:none;
+display:none;
 
-    width:340px;
+background:#2196f3;
 
-    background:#2196f3;
+color:white;
+
+margin-top:15px;
 
 }

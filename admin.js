@@ -1,282 +1,256 @@
 import { db } from "./firebase.js";
 
+
 import {
-    doc,
-    getDoc,
-    updateDoc
+
+doc,
+getDoc,
+updateDoc
+
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
-const startBtn = document.getElementById("startBtn");
-
-const reader = document.getElementById("reader");
-const scannerBox = document.getElementById("scannerBox");
-
-const result = document.getElementById("result");
-
-const actions = document.getElementById("actions");
-
-const action1 = document.getElementById("action1");
-const action2 = document.getElementById("action2");
-const cancelBtn = document.getElementById("cancelBtn");
-
-const retryBtn = document.getElementById("retryBtn");
-
-const dayRadios =
-document.querySelectorAll('input[name="day"]');
-
-let collectionName = "tickets_day1";
-
-let scanner = null;
-
-let currentId = null;
-
-let isScanning = false;
-
-let isProcessing = false;
 
 
-dayRadios.forEach(radio => {
+const startBtn =
+document.getElementById("startBtn");
 
-    radio.addEventListener("change",()=>{
 
-        collectionName = radio.value;
+const scannerBox =
+document.getElementById("scannerBox");
 
-    });
+
+const reader =
+document.getElementById("reader");
+
+
+const result =
+document.getElementById("result");
+
+
+const actions =
+document.getElementById("actions");
+
+
+const action1 =
+document.getElementById("action1");
+
+
+const action2 =
+document.getElementById("action2");
+
+
+const cancelBtn =
+document.getElementById("cancelBtn");
+
+
+const retryBtn =
+document.getElementById("retryBtn");
+
+
+const radios =
+document.querySelectorAll(
+'input[name="day"]'
+);
+
+
+
+
+let collectionName =
+"tickets_day1";
+
+
+let scanner=null;
+
+let currentId=null;
+
+let processing=false;
+
+
+
+
+radios.forEach(radio=>{
+
+
+radio.addEventListener("change",()=>{
+
+
+collectionName =
+radio.value;
+
 
 });
 
-startBtn.onclick = () => {
 
-    startScanner();
+});
+
+
+
+
+
+startBtn.onclick=()=>{
+
+
+startScanner();
+
 
 };
+
+
+
+
 
 
 
 async function startScanner(){
 
-    resetDisplay();
 
 
-    startBtn.style.display="none";
-
-    scannerBox.style.display="block";
+startBtn.style.display="none";
 
 
-    if(scanner){
+result.style.display="none";
 
-        try{
 
-            await scanner.clear();
-
-        }catch(e){}
-
-    }
+scannerBox.style.display="block";
 
 
 
-    scanner = new Html5Qrcode("reader");
-
-    isScanning = true;
+if(scanner){
 
 
+try{
 
-    scanner.start(
+await scanner.clear();
 
-        {
-            facingMode:"environment"
-        },
+}catch{}
 
-
-        {
-
-            fps:10,
+}
 
 
-            qrbox:(width,height)=>{
 
-                const size =
-                Math.min(width,height)*0.65;
-
-
-                return {
-
-                    width:size,
-
-                    height:size
-
-                };
-
-            },
+scanner =
+new Html5Qrcode("reader");
 
 
-            aspectRatio:1.0
-
-        },
 
 
-        scanSuccess,
+scanner.start(
 
 
-        ()=>{}
-
-    )
-    .catch(error=>{
-
-
-        console.error(error);
+{
+facingMode:"environment"
+},
 
 
-        result.textContent =
-        "❌ カメラを起動できません";
+{
+
+fps:10,
 
 
-        retryBtn.style.display="block";
+qrbox:(width,height)=>{
 
 
-    });
+const size =
+Math.min(width,height)*0.7;
+
+
+return {
+
+width:size,
+
+height:size
+
+};
+
+
+}
+
+},
+
+
+scanSuccess,
+
+
+()=>{}
+
+
+
+);
 
 
 }
 
 
 
-// =======================
-// QR読み取り成功
-// =======================
+
+
+
+
+
 
 async function scanSuccess(text){
 
 
-    if(isProcessing)
-        return;
+if(processing)
+return;
 
 
-    isProcessing=true;
+processing=true;
 
 
-    try{
 
+try{
 
-        await stopScanner();
 
+await scanner.stop();
 
-        currentId=text;
 
+await scanner.clear();
 
 
-        const snap =
-        await getDoc(
-            doc(db,collectionName,currentId)
-        );
 
+scanner=null;
 
 
-        // -----------------------
-        // 存在しない場合
-        // -----------------------
+scannerBox.style.display="none";
 
-        if(!snap.exists()){
 
+result.style.display="block";
 
-            const otherCollection =
-            collectionName==="tickets_day1"
-            ?"tickets_day2"
-            :"tickets_day1";
 
 
+currentId=text;
 
-            const otherSnap =
-            await getDoc(
-                doc(db,otherCollection,currentId)
-            );
 
 
 
-            if(otherSnap.exists()){
+const snap =
+await getDoc(
 
+doc(
+db,
+collectionName,
+currentId
+)
 
-                if(collectionName==="tickets_day1"){
+);
 
-                    result.textContent =
-                    "⚠️ これは2日目の整理券です";
 
-                }else{
 
-                    result.textContent =
-                    "⚠️ これは1日目の整理券です";
 
-                }
 
+if(!snap.exists()){
 
-            }else{
 
 
-                result.textContent =
-                "❌ 整理券が見つかりません";
+result.textContent =
+"❌ 整理券が見つかりません";
 
 
-            }
+retryBtn.style.display="block";
 
 
-
-            retryBtn.style.display="block";
-
-            return;
-
-        }
-
-
-
-
-        // -----------------------
-        // チケット表示
-        // -----------------------
-
-        const data=snap.data();
-
-
-
-        result.innerHTML=`
-
-        No.
-        <span>${data.number}</span>
-
-        <br>
-
-        現在：
-        ${statusText(data.status)}
-
-        `;
-
-
-
-        showActions(data.status);
-
-
-
-    }
-    catch(e){
-
-
-        console.error(e);
-
-
-        result.textContent =
-        "❌ 読み取りエラー";
-
-
-        retryBtn.style.display="block";
-
-
-    }
-    finally{
-
-
-        isProcessing=false;
-
-
-    }
+return;
 
 
 }
@@ -284,245 +258,230 @@ async function scanSuccess(text){
 
 
 
-// =======================
-// 状態表示
-// =======================
+
+const data =
+snap.data();
+
+
+
+result.innerHTML=`
+
+No.${data.number}
+
+<br><br>
+
+現在：
+${statusText(data.status)}
+
+`;
+
+
+
+showActions(data.status);
+
+
+
+
+}
+catch(e){
+
+
+console.error(e);
+
+
+result.textContent =
+"❌ 読み取りエラー";
+
+
+retryBtn.style.display="block";
+
+
+}
+finally{
+
+
+processing=false;
+
+
+}
+
+
+}
+
+
+
+
+
 
 function statusText(status){
 
 
-    switch(status){
+if(status==="waiting")
+return "受付前";
 
 
-        case "waiting":
-            return "受付前";
+if(status==="before")
+return "入場前";
 
 
-        case "before":
-            return "入場前";
+if(status==="entered")
+return "入場済み";
 
 
-        case "entered":
-            return "入場済み";
-
-
-        default:
-            return "不明";
-
-
-    }
+return "不明";
 
 
 }
 
 
 
-// =======================
-// ボタン表示
-// =======================
+
+
+
 
 function showActions(status){
 
 
-    actions.style.display="block";
 
-
-    action1.style.display="block";
-
-    action2.style.display="block";
+actions.style.display="block";
 
 
 
-    switch(status){
+if(status==="waiting"){
 
 
-        case "waiting":
+action1.textContent =
+"受付済みにする";
 
 
-            action1.textContent=
-            "受付済みにする";
-
-
-            action2.style.display="none";
-
-
-            action1.onclick=()=>{
-
-                updateStatus("before");
-
-            };
-
-
-            break;
+action2.style.display="none";
 
 
 
+action1.onclick=()=>{
 
-        case "before":
+updateStatus("before");
 
-
-            action1.textContent=
-            "入場済みにする";
-
-
-            action2.textContent=
-            "受付前に戻す";
-
-
-
-            action1.onclick=()=>{
-
-                updateStatus("entered");
-
-            };
-
-
-
-            action2.onclick=()=>{
-
-                updateStatus("waiting");
-
-            };
-
-
-            break;
-
-
-
-
-        case "entered":
-
-
-            action1.textContent=
-            "入場前に戻す";
-
-
-            action2.textContent=
-            "受付前に戻す";
-
-
-
-            action1.onclick=()=>{
-
-                updateStatus("before");
-
-            };
-
-
-
-            action2.onclick=()=>{
-
-                updateStatus("waiting");
-
-            };
-
-
-            break;
-
-
-    }
+};
 
 
 }
 
 
 
-// =======================
-// 状態更新
-// =======================
 
-async function updateStatus(nextStatus){
+if(status==="before"){
 
 
-    try{
+action1.textContent =
+"入場済みにする";
 
 
-        await updateDoc(
+action2.style.display="block";
 
-            doc(
-                db,
-                collectionName,
-                currentId
-            ),
 
-            {
-
-                status:nextStatus
-
-            }
-
-        );
+action2.textContent =
+"受付前に戻す";
 
 
 
-        result.innerHTML=
-        "✅ 更新しました";
+action1.onclick=()=>{
+
+updateStatus("entered");
+
+};
 
 
 
-        actions.style.display="none";
+action2.onclick=()=>{
 
+updateStatus("waiting");
 
-
-        setTimeout(()=>{
-
-            reset();
-
-        },1000);
-
-
-
-    }
-    catch(e){
-
-
-        console.error(e);
-
-
-        result.textContent=
-        "❌ 更新失敗";
-
-
-        retryBtn.style.display="block";
-
-
-    }
+};
 
 
 }
 
 
 
-// =======================
-// カメラ停止
-// =======================
 
-async function stopScanner(){
+if(status==="entered"){
 
 
-    if(scanner && isScanning){
+action1.textContent =
+"入場前に戻す";
 
 
-        try{
+action2.style.display="block";
 
-            await scanner.stop();
 
-        }catch(e){}
+action2.textContent =
+"受付前に戻す";
 
 
 
-        try{
+action1.onclick=()=>{
 
-            await scanner.clear();
+updateStatus("before");
 
-        }catch(e){}
-
-
-
-        isScanning=false;
+};
 
 
-    }
+action2.onclick=()=>{
+
+updateStatus("waiting");
+
+};
+
+
+}
+
+
+}
+
+
+
+
+
+
+
+async function updateStatus(status){
+
+
+
+await updateDoc(
+
+doc(
+db,
+collectionName,
+currentId
+),
+
+{
+
+status:status
+
+}
+
+);
+
+
+
+actions.style.display="none";
+
+
+result.textContent =
+"✅ 更新しました";
+
+
+
+setTimeout(()=>{
+
+
+reset();
+
+
+},1000);
 
 
 
@@ -530,87 +489,65 @@ async function stopScanner(){
 
 
 
-// =======================
-// リセット
-// =======================
-
-async function reset(){
-
-
-    await stopScanner();
 
 
 
-    scanner=null;
 
 
-    currentId=null;
+function reset(){
 
 
 
-    scannerBox.style.display="none";
+currentId=null;
 
 
-    actions.style.display="none";
+scannerBox.style.display="none";
 
 
-    retryBtn.style.display="none";
+result.style.display="block";
 
 
-    startBtn.style.display="block";
+result.textContent =
+"QRコードを読み取ってください";
 
 
-    result.textContent=
-    "QRコードを読み取ってください";
+actions.style.display="none";
+
+
+retryBtn.style.display="none";
+
+
+startBtn.style.display="block";
+
 
 
 }
 
 
 
-// =======================
-// 表示だけリセット
-// =======================
-
-function resetDisplay(){
-
-
-    actions.style.display="none";
-
-
-    retryBtn.style.display="none";
-
-
-    result.textContent=
-    "QRコードを読み取ってください";
-
-
-}
 
 
 
-// =======================
-// ボタン
-// =======================
 
 cancelBtn.onclick=()=>{
 
-    reset();
+
+reset();
+
 
 };
+
+
 
 
 
 retryBtn.onclick=()=>{
 
 
-    reset();
+reset();
 
-    setTimeout(()=>{
 
-        startScanner();
-
-    },200);
+startScanner();
 
 
 };
