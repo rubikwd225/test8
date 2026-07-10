@@ -3,10 +3,16 @@
 ======================= */
 
 *{
+
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Yu Gothic","Meiryo",sans-serif;
+
+    font-family:
+    "Yu Gothic",
+    "Meiryo",
+    sans-serif;
+
 }
 
 
@@ -28,7 +34,6 @@ body{
     padding:30px;
 
 }
-
 
 
 
@@ -56,19 +61,26 @@ h1{
 
 #daySelect{
 
+
     display:flex;
 
     gap:25px;
 
+
     background:#1b1b1d;
+
 
     padding:15px 25px;
 
+
     border-radius:14px;
+
 
     border:1px solid #333;
 
+
     margin-bottom:25px;
+
 
 }
 
@@ -98,29 +110,40 @@ h1{
 
 
 
+
 /* =======================
    ボタン共通
 ======================= */
 
 button{
 
+
     width:340px;
+
 
     max-width:90vw;
 
+
     padding:16px;
+
 
     border:none;
 
+
     border-radius:14px;
+
 
     font-size:18px;
 
+
     font-weight:bold;
+
 
     cursor:pointer;
 
+
     transition:.2s;
+
 
 }
 
@@ -128,7 +151,9 @@ button{
 
 button:hover{
 
+
     transform:scale(1.03);
+
 
 }
 
@@ -140,18 +165,24 @@ button:hover{
 
 
 /* =======================
-   スキャン開始
+   スタート
 ======================= */
 
 #startBtn{
 
+
     background:white;
+
 
     color:#111;
 
+
     margin-bottom:20px;
 
+
 }
+
+
 
 
 
@@ -165,23 +196,33 @@ button:hover{
 
 #reader{
 
+
     width:340px;
 
-    height:340px;
+
+    height:0;
+
 
     max-width:90vw;
 
-    max-height:90vw;
 
     overflow:hidden;
 
+
     border-radius:20px;
+
 
     background:black;
 
+
     visibility:hidden;
 
-    margin-bottom:20px;
+
+    margin:0;
+
+
+    transition:.2s;
+
 
 }
 
@@ -190,15 +231,17 @@ button:hover{
 
 
 
-/* カメラ映像 */
-
 #reader video{
+
 
     width:100%!important;
 
+
     height:100%!important;
 
+
     object-fit:cover;
+
 
 }
 
@@ -215,40 +258,55 @@ button:hover{
 
 #result{
 
+
     width:340px;
+
 
     max-width:90vw;
 
+
     min-height:110px;
+
 
     background:#1b1b1d;
 
+
     border:1px solid #333;
+
 
     border-radius:16px;
 
+
     padding:20px;
+
 
     text-align:center;
 
+
     font-size:22px;
+
 
     line-height:1.8;
 
-    margin-bottom:15px;
+
+    margin-top:20px;
+
 
 }
 
 
 
-
 #result span{
+
 
     font-size:42px;
 
+
     font-weight:bold;
 
+
     color:#00d4ff;
+
 
 }
 
@@ -260,40 +318,50 @@ button:hover{
 
 
 /* =======================
-   操作
+   操作ボタン
 ======================= */
 
 #actions{
 
+
     display:none;
+
 
     width:340px;
 
+
     max-width:90vw;
 
+
+    margin-top:15px;
+
+
 }
-
-
 
 
 
 #actions button{
 
+
     width:100%;
+
 
     margin-bottom:12px;
 
+
     color:white;
 
-}
 
+}
 
 
 
 
 #action1{
 
+
     background:#00c853;
+
 
 }
 
@@ -301,7 +369,9 @@ button:hover{
 
 #action2{
 
+
     background:#ff9800;
+
 
 }
 
@@ -309,7 +379,9 @@ button:hover{
 
 #cancelBtn{
 
+
     background:#f44336;
+
 
 }
 
@@ -317,9 +389,18 @@ button:hover{
 
 #retryBtn{
 
+
     display:none;
 
+
     background:#2196f3;
+
+
+    color:white;
+
+
+    margin-top:12px;
+
 
 }
 
@@ -346,7 +427,6 @@ button:hover{
         font-size:32px;
 
     }
-
 
 
 }

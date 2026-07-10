@@ -27,6 +27,7 @@ const dayRadios =
 document.querySelectorAll('input[name="day"]');
 
 
+
 // =======================
 // Variables
 // =======================
@@ -41,8 +42,9 @@ let scanning = false;
 
 
 
+
 // =======================
-// Day change
+// Day select
 // =======================
 
 dayRadios.forEach(radio=>{
@@ -59,7 +61,7 @@ dayRadios.forEach(radio=>{
 
 
 // =======================
-// Start button
+// Start
 // =======================
 
 startBtn.onclick = ()=>{
@@ -71,9 +73,7 @@ startBtn.onclick = ()=>{
 
 
 
-// =======================
-// Scanner start
-// =======================
+
 
 async function startScanner(){
 
@@ -82,33 +82,34 @@ async function startScanner(){
     return;
 
 
-    scanning = true;
+    scanning=true;
 
 
     // 完全初期化
 
-    reader.innerHTML = "";
+    reader.innerHTML="";
+
+
+    startBtn.style.display="none";
+
+    result.style.display="none";
+
+    actions.style.display="none";
+
+    retryBtn.style.display="none";
 
 
 
-    startBtn.style.display = "none";
+    reader.style.height="340px";
 
-    result.style.display = "none";
+    reader.style.visibility="visible";
 
-    actions.style.display = "none";
-
-    retryBtn.style.display = "none";
-
-
-
-    reader.style.visibility = "visible";
-
-    reader.style.height = "340px";
 
 
 
     scanner =
     new Html5Qrcode("reader");
+
 
 
 
@@ -132,14 +133,12 @@ async function startScanner(){
 
                     const size =
                     Math.floor(
-                        Math.min(
-                            width,
-                            height
-                        ) * 0.65
+                        Math.min(width,height)
+                        *0.65
                     );
 
 
-                    return {
+                    return{
 
                         width:size,
 
@@ -147,13 +146,12 @@ async function startScanner(){
 
                     };
 
-
                 }
 
             },
 
 
-            scanSuccess,
+            qrSuccess,
 
 
             ()=>{}
@@ -161,14 +159,16 @@ async function startScanner(){
         );
 
 
+
     }
-    catch(error){
+    catch(e){
 
 
-        console.error(error);
+        console.error(e);
 
 
-        stopScanner();
+        stopCamera();
+
 
 
         result.style.display="block";
@@ -182,6 +182,7 @@ async function startScanner(){
 
     }
 
+
 }
 
 
@@ -190,10 +191,10 @@ async function startScanner(){
 
 
 // =======================
-// QR Success
+// QR success
 // =======================
 
-async function scanSuccess(text){
+async function qrSuccess(text){
 
 
     if(!scanning)
@@ -218,16 +219,15 @@ async function scanSuccess(text){
 
 
 
-        stopScanner();
+        stopCamera();
 
 
 
-        result.style.display =
-        "block";
+        result.style.display="block";
 
 
 
-        currentId = text;
+        currentId=text;
 
 
 
@@ -249,6 +249,7 @@ async function scanSuccess(text){
 
 
 
+
         if(!snap.exists()){
 
 
@@ -256,8 +257,7 @@ async function scanSuccess(text){
             "❌ 整理券が見つかりません";
 
 
-            retryBtn.style.display =
-            "block";
+            retryBtn.style.display="block";
 
 
             return;
@@ -268,13 +268,12 @@ async function scanSuccess(text){
 
 
 
-        const data =
-        snap.data();
+
+        const data=snap.data();
 
 
 
-
-        result.innerHTML = `
+        result.innerHTML=`
 
         No.${data.number}
 
@@ -292,21 +291,20 @@ async function scanSuccess(text){
 
 
     }
-    catch(error){
+    catch(e){
 
 
-        console.error(error);
+        console.error(e);
 
 
-        stopScanner();
+        stopCamera();
 
 
         result.textContent =
         "❌ 読み取りエラー";
 
 
-        retryBtn.style.display =
-        "block";
+        retryBtn.style.display="block";
 
 
     }
@@ -317,29 +315,19 @@ async function scanSuccess(text){
 
 
 
-// =======================
-// Stop camera
-// =======================
-
-function stopScanner(){
+function stopCamera(){
 
 
-    reader.innerHTML = "";
+    reader.innerHTML="";
 
 
-    reader.style.visibility =
-    "hidden";
+    reader.style.visibility="hidden";
 
 
-    reader.style.height =
-    "0";
+    reader.style.height="0px";
 
 
 }
-
-
-
-
 // =======================
 // Status text
 // =======================
@@ -347,27 +335,45 @@ function stopScanner(){
 function statusText(status){
 
 
-    if(status==="waiting")
-    return "受付前";
+    switch(status){
 
 
-    if(status==="before")
-    return "入場前";
+        case "waiting":
+
+            return "受付前";
 
 
-    if(status==="entered")
-    return "入場済み";
+        case "before":
+
+            return "入場前";
 
 
-    return "不明";
+        case "entered":
+
+            return "入場済み";
+
+
+        default:
+
+            return "不明";
+
+
+    }
 
 
 }
+
+
+
+
+
+
 // =======================
 // Show actions
 // =======================
 
 function showActions(status){
+
 
 
     // 毎回完全リセット
@@ -380,12 +386,14 @@ function showActions(status){
     "block";
 
 
+
     action1.textContent =
     "";
 
 
     action2.textContent =
     "";
+
 
 
     action1.onclick =
@@ -411,8 +419,10 @@ function showActions(status){
         case "waiting":
 
 
+
             action1.textContent =
             "受付済みにする";
+
 
 
             action2.style.display =
@@ -423,9 +433,7 @@ function showActions(status){
             action1.onclick = ()=>{
 
 
-                updateStatus(
-                    "before"
-                );
+                updateStatus("before");
 
 
             };
@@ -439,7 +447,9 @@ function showActions(status){
 
 
 
+
         case "before":
+
 
 
             action1.textContent =
@@ -454,20 +464,17 @@ function showActions(status){
             action1.onclick = ()=>{
 
 
-                updateStatus(
-                    "entered"
-                );
+                updateStatus("entered");
 
 
             };
 
 
+
             action2.onclick = ()=>{
 
 
-                updateStatus(
-                    "waiting"
-                );
+                updateStatus("waiting");
 
 
             };
@@ -481,7 +488,9 @@ function showActions(status){
 
 
 
+
         case "entered":
+
 
 
             action1.textContent =
@@ -496,26 +505,24 @@ function showActions(status){
             action1.onclick = ()=>{
 
 
-                updateStatus(
-                    "before"
-                );
+                updateStatus("before");
 
 
             };
 
 
+
             action2.onclick = ()=>{
 
 
-                updateStatus(
-                    "waiting"
-                );
+                updateStatus("waiting");
 
 
             };
 
 
             break;
+
 
 
     }
@@ -531,11 +538,13 @@ function showActions(status){
 
 
 
+
 // =======================
-// Update status
+// Update
 // =======================
 
 async function updateStatus(nextStatus){
+
 
 
     try{
@@ -553,7 +562,6 @@ async function updateStatus(nextStatus){
 
             ),
 
-
             {
 
                 status:
@@ -561,8 +569,8 @@ async function updateStatus(nextStatus){
 
             }
 
-
         );
+
 
 
 
@@ -594,10 +602,10 @@ async function updateStatus(nextStatus){
 
 
     }
-    catch(error){
+    catch(e){
 
 
-        console.error(error);
+        console.error(e);
 
 
 
@@ -622,7 +630,7 @@ async function updateStatus(nextStatus){
 
 
 // =======================
-// Full reset
+// Reset
 // =======================
 
 async function reset(){
@@ -634,16 +642,13 @@ async function reset(){
 
 
 
-    // カメラ停止
 
     if(scanner){
 
 
         try{
 
-
             await scanner.stop();
-
 
         }
         catch{}
@@ -652,9 +657,7 @@ async function reset(){
 
         try{
 
-
             await scanner.clear();
-
 
         }
         catch{}
@@ -668,8 +671,7 @@ async function reset(){
 
 
 
-
-    stopScanner();
+    stopCamera();
 
 
 
@@ -708,9 +710,9 @@ async function reset(){
 
 
 
-
     retryBtn.style.display =
     "none";
+
 
 
     startBtn.style.display =
