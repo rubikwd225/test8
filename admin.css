@@ -1,9 +1,14 @@
+/* =======================
+   基本
+======================= */
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
     font-family:"Yu Gothic","Meiryo",sans-serif;
 }
+
 
 
 body{
@@ -27,6 +32,8 @@ body{
 
 
 
+
+
 h1{
 
     font-size:40px;
@@ -41,7 +48,11 @@ h1{
 
 
 
-/* 日付選択 */
+
+
+/* =======================
+   日付選択
+======================= */
 
 #daySelect{
 
@@ -86,7 +97,10 @@ h1{
 
 
 
-/* ボタン共通 */
+
+/* =======================
+   ボタン共通
+======================= */
 
 button{
 
@@ -124,7 +138,10 @@ button:hover{
 
 
 
-/* スキャン開始 */
+
+/* =======================
+   スキャン開始
+======================= */
 
 #startBtn{
 
@@ -142,23 +159,27 @@ button:hover{
 
 
 
-/* カメラ */
+/* =======================
+   カメラ
+======================= */
 
 #reader{
 
     width:340px;
 
+    height:340px;
+
     max-width:90vw;
 
-    height:0;
-
-    visibility:hidden;
+    max-height:90vw;
 
     overflow:hidden;
 
+    border-radius:20px;
+
     background:black;
 
-    border-radius:18px;
+    visibility:hidden;
 
     margin-bottom:20px;
 
@@ -168,6 +189,8 @@ button:hover{
 
 
 
+
+/* カメラ映像 */
 
 #reader video{
 
@@ -184,7 +207,11 @@ button:hover{
 
 
 
-/* 結果 */
+
+
+/* =======================
+   結果
+======================= */
 
 #result{
 
@@ -231,7 +258,10 @@ button:hover{
 
 
 
-/* 操作エリア */
+
+/* =======================
+   操作
+======================= */
 
 #actions{
 
@@ -249,14 +279,13 @@ button:hover{
 
 #actions button{
 
-    display:block;
-
     width:100%;
 
     margin-bottom:12px;
 
-}
+    color:white;
 
+}
 
 
 
@@ -266,11 +295,7 @@ button:hover{
 
     background:#00c853;
 
-    color:white;
-
 }
-
-
 
 
 
@@ -278,11 +303,7 @@ button:hover{
 
     background:#ff9800;
 
-    color:white;
-
 }
-
-
 
 
 
@@ -290,12 +311,7 @@ button:hover{
 
     background:#f44336;
 
-    color:white;
-
 }
-
-
-
 
 
 
@@ -305,23 +321,8 @@ button:hover{
 
     background:#2196f3;
 
-    color:white;
-
-    margin-top:5px;
-
 }
 
-
-
-
-
-
-
-button:disabled{
-
-    opacity:.5;
-
-}
 
 
 

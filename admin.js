@@ -1,7 +1,3 @@
-// =======================
-// Firebase
-// =======================
-
 import { db } from "./firebase.js";
 
 import {
@@ -11,38 +7,24 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 
-
-
 // =======================
 // Elements
 // =======================
 
-const startBtn =
-document.getElementById("startBtn");
+const startBtn = document.getElementById("startBtn");
+const reader = document.getElementById("reader");
+const result = document.getElementById("result");
 
-const reader =
-document.getElementById("reader");
+const actions = document.getElementById("actions");
 
-const result =
-document.getElementById("result");
+const action1 = document.getElementById("action1");
+const action2 = document.getElementById("action2");
+const cancelBtn = document.getElementById("cancelBtn");
 
-const actions =
-document.getElementById("actions");
+const retryBtn = document.getElementById("retryBtn");
 
-const action1 =
-document.getElementById("action1");
-
-const action2 =
-document.getElementById("action2");
-
-const cancelBtn =
-document.getElementById("cancelBtn");
-
-const retryBtn =
-document.getElementById("retryBtn");
-
-
-
+const dayRadios =
+document.querySelectorAll('input[name="day"]');
 
 
 // =======================
@@ -59,38 +41,25 @@ let scanning = false;
 
 
 
-
-
 // =======================
 // Day change
 // =======================
 
-document
-.querySelectorAll('input[name="day"]')
-.forEach(input=>{
+dayRadios.forEach(radio=>{
 
+    radio.addEventListener("change",()=>{
 
-    input.addEventListener(
-        "change",
-        ()=>{
+        collectionName = radio.value;
 
-            collectionName =
-            input.value;
-
-        }
-    );
-
+    });
 
 });
 
 
 
 
-
-
-
 // =======================
-// Start scanner
+// Start button
 // =======================
 
 startBtn.onclick = ()=>{
@@ -102,6 +71,9 @@ startBtn.onclick = ()=>{
 
 
 
+// =======================
+// Scanner start
+// =======================
 
 async function startScanner(){
 
@@ -113,32 +85,25 @@ async function startScanner(){
     scanning = true;
 
 
+    // 完全初期化
 
-    startBtn.style.display =
-    "none";
-
-
-    actions.style.display =
-    "none";
-
-
-    retryBtn.style.display =
-    "none";
-
-
-    result.style.display =
-    "none";
+    reader.innerHTML = "";
 
 
 
-    reader.style.visibility =
-    "visible";
+    startBtn.style.display = "none";
+
+    result.style.display = "none";
+
+    actions.style.display = "none";
+
+    retryBtn.style.display = "none";
 
 
-    reader.style.height =
-    "auto";
 
+    reader.style.visibility = "visible";
 
+    reader.style.height = "340px";
 
 
 
@@ -147,20 +112,14 @@ async function startScanner(){
 
 
 
-
-
-
     try{
 
 
         await scanner.start(
 
-
             {
-                facingMode:
-                "environment"
+                facingMode:"environment"
             },
-
 
 
             {
@@ -168,8 +127,7 @@ async function startScanner(){
                 fps:10,
 
 
-                qrbox:
-                function(width,height){
+                qrbox:(width,height)=>{
 
 
                     const size =
@@ -177,9 +135,8 @@ async function startScanner(){
                         Math.min(
                             width,
                             height
-                        ) * 0.7
+                        ) * 0.65
                     );
-
 
 
                     return {
@@ -196,42 +153,34 @@ async function startScanner(){
             },
 
 
-            qrSuccess,
+            scanSuccess,
 
 
             ()=>{}
-
-
 
         );
 
 
     }
-    catch(e){
+    catch(error){
 
 
-        console.error(e);
+        console.error(error);
 
 
-        stopCamera();
+        stopScanner();
 
 
-
-        result.style.display =
-        "block";
-
+        result.style.display="block";
 
         result.textContent =
         "❌ カメラを起動できません";
 
 
-        retryBtn.style.display =
-        "block";
+        retryBtn.style.display="block";
 
 
     }
-
-
 
 }
 
@@ -241,11 +190,10 @@ async function startScanner(){
 
 
 // =======================
-// QR success
+// QR Success
 // =======================
 
-async function qrSuccess(text){
-
+async function scanSuccess(text){
 
 
     if(!scanning)
@@ -270,8 +218,7 @@ async function qrSuccess(text){
 
 
 
-        stopCamera();
-
+        stopScanner();
 
 
 
@@ -280,8 +227,8 @@ async function qrSuccess(text){
 
 
 
-        currentId =
-        text;
+        currentId = text;
+
 
 
 
@@ -299,8 +246,6 @@ async function qrSuccess(text){
             )
 
         );
-
-
 
 
 
@@ -347,13 +292,13 @@ async function qrSuccess(text){
 
 
     }
-    catch(e){
+    catch(error){
 
 
-        console.error(e);
+        console.error(error);
 
 
-        stopCamera();
+        stopScanner();
 
 
         result.textContent =
@@ -372,9 +317,14 @@ async function qrSuccess(text){
 
 
 
+// =======================
+// Stop camera
+// =======================
+
+function stopScanner(){
 
 
-function stopCamera(){
+    reader.innerHTML = "";
 
 
     reader.style.visibility =
@@ -390,46 +340,37 @@ function stopCamera(){
 
 
 
+// =======================
+// Status text
+// =======================
 
 function statusText(status){
 
 
-    switch(status){
+    if(status==="waiting")
+    return "受付前";
 
 
-        case "waiting":
-            return "受付前";
+    if(status==="before")
+    return "入場前";
 
 
-        case "before":
-            return "入場前";
+    if(status==="entered")
+    return "入場済み";
 
 
-        case "entered":
-            return "入場済み";
-
-
-        default:
-            return "不明";
-
-
-    }
+    return "不明";
 
 
 }
 // =======================
-// Action buttons
+// Show actions
 // =======================
 
 function showActions(status){
 
 
-    actions.style.display =
-    "block";
-
-
-
-    // 完全リセット
+    // 毎回完全リセット
 
     action1.style.display =
     "block";
@@ -439,14 +380,12 @@ function showActions(status){
     "block";
 
 
-
     action1.textContent =
     "";
 
 
     action2.textContent =
     "";
-
 
 
     action1.onclick =
@@ -458,6 +397,13 @@ function showActions(status){
 
 
 
+    actions.style.display =
+    "block";
+
+
+
+
+
     switch(status){
 
 
@@ -465,10 +411,8 @@ function showActions(status){
         case "waiting":
 
 
-
             action1.textContent =
             "受付済みにする";
-
 
 
             action2.style.display =
@@ -494,8 +438,8 @@ function showActions(status){
 
 
 
-        case "before":
 
+        case "before":
 
 
             action1.textContent =
@@ -518,7 +462,6 @@ function showActions(status){
             };
 
 
-
             action2.onclick = ()=>{
 
 
@@ -538,9 +481,7 @@ function showActions(status){
 
 
 
-
         case "entered":
-
 
 
             action1.textContent =
@@ -563,7 +504,6 @@ function showActions(status){
             };
 
 
-
             action2.onclick = ()=>{
 
 
@@ -576,7 +516,6 @@ function showActions(status){
 
 
             break;
-
 
 
     }
@@ -592,21 +531,17 @@ function showActions(status){
 
 
 
-
 // =======================
-// Update Firestore
+// Update status
 // =======================
 
 async function updateStatus(nextStatus){
 
 
-
     try{
 
 
-
         await updateDoc(
-
 
             doc(
 
@@ -631,20 +566,18 @@ async function updateStatus(nextStatus){
 
 
 
-
-
         actions.style.display =
-        "none";
-
-
-
-        retryBtn.style.display =
         "none";
 
 
 
         result.innerHTML =
         "✅ 更新しました";
+
+
+
+        retryBtn.style.display =
+        "none";
 
 
 
@@ -660,13 +593,11 @@ async function updateStatus(nextStatus){
 
 
 
-
     }
-    catch(e){
+    catch(error){
 
 
-
-        console.error(e);
+        console.error(error);
 
 
 
@@ -690,9 +621,8 @@ async function updateStatus(nextStatus){
 
 
 
-
 // =======================
-// Reset
+// Full reset
 // =======================
 
 async function reset(){
@@ -704,36 +634,20 @@ async function reset(){
 
 
 
-    actions.style.display =
-    "none";
-
-
-    retryBtn.style.display =
-    "none";
-
-
-
-    startBtn.style.display =
-    "block";
-
-
-
-    result.style.display =
-    "block";
-
-
-    result.textContent =
-    "QRコードを読み取ってください";
-
-
-
-    stopCamera();
-
-
-
-
+    // カメラ停止
 
     if(scanner){
+
+
+        try{
+
+
+            await scanner.stop();
+
+
+        }
+        catch{}
+
 
 
         try{
@@ -751,6 +665,65 @@ async function reset(){
 
 
     }
+
+
+
+
+    stopScanner();
+
+
+
+
+
+    // ボタン完全消去
+
+    actions.style.display =
+    "none";
+
+
+    action1.style.display =
+    "block";
+
+
+    action2.style.display =
+    "block";
+
+
+    action1.textContent =
+    "";
+
+
+    action2.textContent =
+    "";
+
+
+    action1.onclick =
+    null;
+
+
+    action2.onclick =
+    null;
+
+
+
+
+
+
+    retryBtn.style.display =
+    "none";
+
+
+    startBtn.style.display =
+    "block";
+
+
+
+    result.style.display =
+    "block";
+
+
+    result.textContent =
+    "QRコードを読み取ってください";
 
 
 
@@ -781,6 +754,7 @@ cancelBtn.onclick = ()=>{
 
 
 
+
 // =======================
 // Retry
 // =======================
@@ -796,7 +770,6 @@ retryBtn.onclick = ()=>{
 
 
         startScanner();
-
 
 
     },200);
