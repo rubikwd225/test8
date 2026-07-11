@@ -1,13 +1,9 @@
 *{
-
     margin:0;
     padding:0;
     box-sizing:border-box;
-
     font-family:"Yu Gothic","Meiryo",sans-serif;
-
 }
-
 
 
 body{
@@ -27,7 +23,6 @@ body{
     padding:24px;
 
 }
-
 
 
 
@@ -124,7 +119,7 @@ button:hover{
 
 
 
-/* 開始 */
+/* スキャン開始 */
 
 #startBtn{
 
@@ -154,7 +149,7 @@ button:hover{
 
     border-radius:20px;
 
-    transition:.2s;
+    margin-top:15px;
 
 }
 
@@ -184,8 +179,7 @@ button:hover{
 
 
 
-
-/* カメラ停止 */
+/* カメラ閉じる */
 
 #stopBtn{
 
@@ -193,14 +187,11 @@ button:hover{
 
     margin-top:16px;
 
-    margin-bottom:16px;
-
     background:#616161;
 
     color:white;
 
 }
-
 
 
 
@@ -239,7 +230,6 @@ button:hover{
 
 
 
-
 .ticket-number{
 
     font-size:42px;
@@ -254,12 +244,13 @@ button:hover{
 
 
 
+/* 状態色 */
+
 .status-entered{
 
     color:#e53935;
 
 }
-
 
 
 .status-before{
@@ -269,10 +260,9 @@ button:hover{
 }
 
 
-
 .status-waiting{
 
-    color:#00c853;
+    color:#ff9800;
 
 }
 
@@ -280,8 +270,7 @@ button:hover{
 
 
 
-
-/* 操作 */
+/* 操作ボタン */
 
 #actions{
 
@@ -331,6 +320,8 @@ button:hover{
 
 
 
+/* 戻す系ボタン */
+
 .back-btn{
 
     background:#ff9800 !important;
@@ -357,6 +348,8 @@ button:hover{
 
 
 
+/* 再スキャン */
+
 #retryBtn{
 
     display:none;
@@ -381,7 +374,6 @@ button:hover{
         padding:16px;
 
     }
-
 
 
     h1{
