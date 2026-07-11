@@ -5,65 +5,130 @@
     font-family:"Yu Gothic","Meiryo",sans-serif;
 }
 
+
 body{
+
     background:#111;
+
     color:#fff;
+
     display:flex;
+
     flex-direction:column;
+
     align-items:center;
+
     min-height:100vh;
+
     padding:24px;
+
 }
+
+
 
 h1{
+
     font-size:38px;
+
     letter-spacing:3px;
+
     margin-bottom:24px;
+
 }
+
+
+
+/* 日付選択 */
 
 #daySelect{
+
     display:flex;
+
     gap:24px;
+
     margin-bottom:24px;
+
     background:#1d1d1d;
+
     border:1px solid #333;
+
     border-radius:14px;
+
     padding:14px 24px;
+
 }
+
 
 #daySelect label{
+
     cursor:pointer;
+
     font-size:18px;
+
 }
+
 
 #daySelect input{
+
     margin-right:8px;
+
     transform:scale(1.15);
+
 }
+
+
+
+/* 共通ボタン */
 
 button{
+
     width:340px;
+
     max-width:90vw;
+
     border:none;
+
     border-radius:14px;
+
     padding:15px;
+
     font-size:18px;
+
     font-weight:bold;
+
     cursor:pointer;
+
     transition:.2s;
+
 }
+
 
 button:hover{
+
     transform:scale(1.02);
+
 }
 
+
+
+/* スタート */
+
 #startBtn{
+
     background:#fff;
+
     color:#111;
+
 }
+
+
+
+/* カメラ */
+
 #reader{
 
     width:0;
+
     height:0;
 
     max-width:90vw;
@@ -82,37 +147,60 @@ button:hover{
 
 }
 
+
+
 #reader video{
 
     width:100% !important;
+
     height:100% !important;
 
     object-fit:cover;
 
 }
 
+
+
 #reader canvas{
 
     width:100% !important;
+
     height:100% !important;
 
 }
+
+
+
+/* カメラ閉じる */
 
 #stopBtn{
 
     display:none;
 
-    background:#555;
+    width:340px;
+
+    max-width:90vw;
+
+    margin:16px 0;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    background:#616161;
+
     color:#fff;
 
-    margin-top:15px;
-    margin-bottom:20px;
-
 }
+
+
+
+/* 結果 */
 
 #result{
 
     width:340px;
+
     max-width:90vw;
 
     min-height:110px;
@@ -135,6 +223,8 @@ button:hover{
 
 }
 
+
+
 #result span{
 
     font-size:42px;
@@ -145,16 +235,23 @@ button:hover{
 
 }
 
+
+
+/* 操作ボタン */
+
 #actions{
 
     display:none;
 
     width:340px;
+
     max-width:90vw;
 
     margin-top:18px;
 
 }
+
+
 
 #action1{
 
@@ -168,6 +265,8 @@ button:hover{
 
 }
 
+
+
 #action2{
 
     width:100%;
@@ -180,6 +279,22 @@ button:hover{
 
 }
 
+
+
+/* 戻す系ボタン */
+
+.back-btn{
+
+    background:#ff9800 !important;
+
+    color:#fff !important;
+
+}
+
+
+
+/* キャンセル */
+
 #cancelBtn{
 
     width:100%;
@@ -189,6 +304,10 @@ button:hover{
     color:#fff;
 
 }
+
+
+
+/* 再スキャン */
 
 #retryBtn{
 
@@ -202,7 +321,12 @@ button:hover{
 
 }
 
-@media (max-width:600px){
+
+
+/* スマホ */
+
+@media(max-width:600px){
+
 
     body{
 
@@ -210,11 +334,13 @@ button:hover{
 
     }
 
+
     h1{
 
         font-size:30px;
 
     }
+
 
     #daySelect{
 
@@ -226,31 +352,5 @@ button:hover{
 
     }
 
-}
-
-#stopBtn{
-
-    display:none;
-
-    width:340px;
-    max-width:90vw;
-
-    margin:16px 0;
-
-    padding:15px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:#616161;
-
-    color:#fff;
-
-    font-size:18px;
-
-    font-weight:bold;
-
-    cursor:pointer;
 
 }
