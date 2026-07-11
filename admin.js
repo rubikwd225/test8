@@ -7,7 +7,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 
-
 // =======================
 // Elements
 // =======================
@@ -15,38 +14,29 @@ import {
 const startBtn =
 document.getElementById("startBtn");
 
-
 const stopBtn =
 document.getElementById("stopBtn");
-
 
 const reader =
 document.getElementById("reader");
 
-
 const result =
 document.getElementById("result");
-
 
 const actions =
 document.getElementById("actions");
 
-
 const action1 =
 document.getElementById("action1");
-
 
 const action2 =
 document.getElementById("action2");
 
-
 const cancelBtn =
 document.getElementById("cancelBtn");
 
-
 const retryBtn =
 document.getElementById("retryBtn");
-
 
 const dayRadios =
 document.querySelectorAll(
@@ -62,18 +52,14 @@ document.querySelectorAll(
 
 let collectionName =
 localStorage.getItem("selectedDay")
-||
-"tickets_day1";
+|| "tickets_day1";
 
 
 let scanner = null;
 
-
 let currentId = null;
 
-
 let scanning = false;
-
 
 
 
@@ -115,6 +101,7 @@ dayRadios.forEach(radio=>{
 
 
 
+
 // =======================
 // Button Control
 // =======================
@@ -138,7 +125,6 @@ function hideActions(){
     action1.textContent =
     "";
 
-
     action2.textContent =
     "";
 
@@ -146,7 +132,6 @@ function hideActions(){
 
     action1.onclick =
     null;
-
 
     action2.onclick =
     null;
@@ -157,22 +142,20 @@ function hideActions(){
 
 
 
-function resetButtons(){
+
+function showStartOnly(){
 
 
-    hideActions();
-
-
-    retryBtn.style.display =
-    "none";
+    startBtn.style.display =
+    "block";
 
 
     stopBtn.style.display =
     "none";
 
 
-    startBtn.style.display =
-    "block";
+    retryBtn.style.display =
+    "none";
 
 
 }
@@ -182,11 +165,33 @@ function resetButtons(){
 
 
 
+function showRetryOnly(){
+
+
+    startBtn.style.display =
+    "none";
+
+
+    stopBtn.style.display =
+    "none";
+
+
+    retryBtn.style.display =
+    "block";
+
+
+}
+
+
+
+
+
 // =======================
-// Start Camera
+// Start
 // =======================
 
-startBtn.onclick = ()=>{
+startBtn.onclick =
+()=>{
 
 
     startScanner();
@@ -210,7 +215,12 @@ async function startScanner(){
 
 
 
-    resetButtons();
+    hideActions();
+
+
+
+    retryBtn.style.display =
+    "none";
 
 
 
@@ -295,7 +305,6 @@ async function startScanner(){
                     );
 
 
-
                     return {
 
                         width:s,
@@ -320,6 +329,7 @@ async function startScanner(){
         );
 
 
+
     }
     catch(e){
 
@@ -339,8 +349,7 @@ async function startScanner(){
         "❌ カメラを起動できません";
 
 
-        retryBtn.style.display =
-        "block";
+        showRetryOnly();
 
 
     }
@@ -388,7 +397,6 @@ async function closeCamera(){
 
     reader.innerHTML =
     "";
-
 
 
     reader.style.display =
@@ -459,7 +467,7 @@ async function scanSuccess(text){
 
 
         // =======================
-        // 別日のQRチェック
+        // 別日のQR確認
         // =======================
 
         if(!snap.exists()){
@@ -512,12 +520,10 @@ async function scanSuccess(text){
 
 
 
-            retryBtn.style.display =
-            "block";
+            // スキャン開始は出さない
 
+            showRetryOnly();
 
-            startBtn.style.display =
-            "block";
 
 
             return;
@@ -530,6 +536,7 @@ async function scanSuccess(text){
 
         const data =
         snap.data();
+
 
 
 
@@ -553,7 +560,6 @@ async function scanSuccess(text){
                 ${statusText(data.status)}
 
             </b>
-
 
         `;
 
@@ -579,19 +585,13 @@ async function scanSuccess(text){
 
 
 
-        retryBtn.style.display =
-        "block";
-
-
-        startBtn.style.display =
-        "block";
+        showRetryOnly();
 
 
     }
 
 
 }
-
 
 
 
@@ -842,7 +842,7 @@ async function updateStatus(nextStatus){
             ),
 
             {
-                status:nextStatus
+                status: nextStatus
             }
 
         );
@@ -859,7 +859,7 @@ async function updateStatus(nextStatus){
 
 
         result.innerHTML =
-        "✅更新しました";
+        "✅ 更新しました";
 
 
 
@@ -885,19 +885,19 @@ async function updateStatus(nextStatus){
         "block";
 
 
+
         result.innerHTML =
         "❌ 更新失敗";
 
 
-        retryBtn.style.display =
-        "block";
+
+        showRetryOnly();
 
 
     }
 
 
 }
-
 
 
 
@@ -923,16 +923,6 @@ async function reset(){
 
 
 
-    retryBtn.style.display =
-    "none";
-
-
-
-    startBtn.style.display =
-    "block";
-
-
-
     result.style.display =
     "none";
 
@@ -940,6 +930,18 @@ async function reset(){
     result.innerHTML =
     "";
 
+
+
+    retryBtn.style.display =
+    "none";
+
+
+    startBtn.style.display =
+    "block";
+
+
+    stopBtn.style.display =
+    "none";
 
 
 }
@@ -961,6 +963,7 @@ cancelBtn.onclick =
 
 
 };
+
 
 
 
