@@ -12,81 +12,107 @@ content="width=device-width, initial-scale=1.0">
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
-<link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="admin.css?v=3">
 
 </head>
 
+
 <body>
+
 
 <h1>QR CHECK</h1>
 
+
+
 <div id="daySelect">
 
-    <label>
 
-        <input
-            type="radio"
-            name="day"
-            value="tickets_day1">
+<label>
 
-        1日目
+<input
+type="radio"
+name="day"
+value="tickets_day1">
 
-    </label>
+1日目
 
-    <label>
+</label>
 
-        <input
-            type="radio"
-            name="day"
-            value="tickets_day2">
 
-        2日目
 
-    </label>
+<label>
+
+<input
+type="radio"
+name="day"
+value="tickets_day2">
+
+2日目
+
+</label>
+
 
 </div>
+
+
 
 <button id="startBtn">
 
-    スキャン開始
+スキャン開始
 
 </button>
+
+
 
 <div id="reader"></div>
 
+
+
 <button id="stopBtn">
 
-    カメラを閉じる
+カメラを閉じる
 
 </button>
 
-<div id="result">
 
-    QRコードを読み取ってください
 
-</div>
+<div id="result"></div>
+
+
+
 
 <div id="actions">
 
-    <button id="action1"></button>
 
-    <button id="action2"></button>
+<button id="action1"></button>
 
-    <button id="cancelBtn">
 
-        キャンセル
+<button id="action2"></button>
 
-    </button>
 
-</div>
+<button id="cancelBtn">
 
-<button id="retryBtn">
-
-    もう一度スキャン
+キャンセル
 
 </button>
 
-<script type="module" src="./admin.js"></script>
+
+</div>
+
+
+
+
+<button id="retryBtn">
+
+もう一度スキャン
+
+</button>
+
+
+
+
+<script type="module" src="./admin.js?v=3"></script>
+
 
 </body>
 

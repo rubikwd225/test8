@@ -7,26 +7,53 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
 
+
 // =======================
 // Elements
 // =======================
 
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
+const startBtn =
+document.getElementById("startBtn");
 
-const reader = document.getElementById("reader");
-const result = document.getElementById("result");
 
-const actions = document.getElementById("actions");
+const stopBtn =
+document.getElementById("stopBtn");
 
-const action1 = document.getElementById("action1");
-const action2 = document.getElementById("action2");
 
-const cancelBtn = document.getElementById("cancelBtn");
-const retryBtn = document.getElementById("retryBtn");
+const reader =
+document.getElementById("reader");
+
+
+const result =
+document.getElementById("result");
+
+
+const actions =
+document.getElementById("actions");
+
+
+const action1 =
+document.getElementById("action1");
+
+
+const action2 =
+document.getElementById("action2");
+
+
+const cancelBtn =
+document.getElementById("cancelBtn");
+
+
+const retryBtn =
+document.getElementById("retryBtn");
+
 
 const dayRadios =
-document.querySelectorAll('input[name="day"]');
+document.querySelectorAll(
+    'input[name="day"]'
+);
+
+
 
 
 // =======================
@@ -35,14 +62,20 @@ document.querySelectorAll('input[name="day"]');
 
 let collectionName =
 localStorage.getItem("selectedDay")
-|| "tickets_day1";
+||
+"tickets_day1";
 
 
 let scanner = null;
 
+
 let currentId = null;
 
+
 let scanning = false;
+
+
+
 
 
 // =======================
@@ -57,24 +90,28 @@ dayRadios.forEach(radio=>{
 
 
 
-    radio.addEventListener("change",()=>{
+    radio.addEventListener(
+        "change",
+        ()=>{
 
 
-        collectionName =
-        radio.value;
+            collectionName =
+            radio.value;
 
 
 
-        localStorage.setItem(
-            "selectedDay",
-            collectionName
-        );
+            localStorage.setItem(
+                "selectedDay",
+                collectionName
+            );
 
 
-    });
+        }
+    );
 
 
 });
+
 
 
 
@@ -84,58 +121,82 @@ dayRadios.forEach(radio=>{
 
 function hideActions(){
 
-    actions.style.display="none";
+
+    actions.style.display =
+    "none";
 
 
-    action1.style.display="none";
-
-    action2.style.display="none";
-
-
-    action1.textContent="";
-
-    action2.textContent="";
+    action1.style.display =
+    "none";
 
 
-    action1.onclick=null;
+    action2.style.display =
+    "none";
 
-    action2.onclick=null;
+
+
+    action1.textContent =
+    "";
+
+
+    action2.textContent =
+    "";
+
+
+
+    action1.onclick =
+    null;
+
+
+    action2.onclick =
+    null;
+
 
 }
+
 
 
 
 function resetButtons(){
 
+
     hideActions();
 
 
-    retryBtn.style.display="none";
+    retryBtn.style.display =
+    "none";
 
 
-    stopBtn.style.display="none";
+    stopBtn.style.display =
+    "none";
 
 
-    startBtn.style.display="block";
+    startBtn.style.display =
+    "block";
+
 
 }
 
 
+
+
+
+
 // =======================
-// Start
+// Start Camera
 // =======================
 
-startBtn.onclick=()=>{
+startBtn.onclick = ()=>{
+
 
     startScanner();
+
 
 };
 
 
 
-// =======================
-// Camera Start
-// =======================
+
 
 async function startScanner(){
 
@@ -145,7 +206,7 @@ async function startScanner(){
 
 
 
-    scanning=true;
+    scanning = true;
 
 
 
@@ -153,36 +214,58 @@ async function startScanner(){
 
 
 
-    startBtn.style.display="none";
-
-    stopBtn.style.display="block";
-
-
-    result.style.display="none";
+    startBtn.style.display =
+    "none";
 
 
-    reader.innerHTML="";
+    stopBtn.style.display =
+    "block";
+
+
+
+    result.style.display =
+    "none";
+
+
+    result.innerHTML =
+    "";
+
+
+
+    reader.innerHTML =
+    "";
+
 
 
     const size =
     Math.min(
-        window.innerWidth*0.9,
+        window.innerWidth * 0.9,
         340
     );
 
 
-    reader.style.display="block";
 
-    reader.style.visibility="visible";
+    reader.style.display =
+    "block";
 
-    reader.style.width=size+"px";
 
-    reader.style.height=size+"px";
+    reader.style.visibility =
+    "visible";
+
+
+    reader.style.width =
+    size + "px";
+
+
+    reader.style.height =
+    size + "px";
 
 
 
     scanner =
-    new Html5Qrcode("reader");
+    new Html5Qrcode(
+        "reader"
+    );
 
 
 
@@ -192,7 +275,8 @@ async function startScanner(){
         await scanner.start(
 
             {
-                facingMode:"environment"
+                facingMode:
+                "environment"
             },
 
 
@@ -206,11 +290,13 @@ async function startScanner(){
 
                     const s =
                     Math.floor(
-                        Math.min(w,h)*0.65
+                        Math.min(w,h)
+                        *0.65
                     );
 
 
-                    return{
+
+                    return {
 
                         width:s,
 
@@ -244,13 +330,17 @@ async function startScanner(){
         await closeCamera();
 
 
-        result.style.display="block";
 
-        result.innerHTML=
+        result.style.display =
+        "block";
+
+
+        result.innerHTML =
         "❌ カメラを起動できません";
 
 
-        retryBtn.style.display="block";
+        retryBtn.style.display =
+        "block";
 
 
     }
@@ -260,8 +350,9 @@ async function startScanner(){
 
 
 
+
 // =======================
-// Camera Close
+// Close Camera
 // =======================
 
 async function closeCamera(){
@@ -288,32 +379,44 @@ async function closeCamera(){
 
 
 
-        scanner=null;
+        scanner = null;
 
 
     }
 
 
 
-    reader.innerHTML="";
+    reader.innerHTML =
+    "";
 
 
-    reader.style.display="none";
 
-    reader.style.visibility="hidden";
-
-    reader.style.width="0";
-
-    reader.style.height="0";
+    reader.style.display =
+    "none";
 
 
-    stopBtn.style.display="none";
+    reader.style.visibility =
+    "hidden";
 
 
-    scanning=false;
+    reader.style.width =
+    "0";
+
+
+    reader.style.height =
+    "0";
+
+
+
+    stopBtn.style.display =
+    "none";
+
+
+    scanning = false;
 
 
 }
+
 // =======================
 // QR Success
 // =======================
@@ -334,7 +437,8 @@ async function scanSuccess(text){
 
 
 
-    result.style.display="block";
+    result.style.display =
+    "block";
 
 
 
@@ -363,8 +467,10 @@ async function scanSuccess(text){
 
             const otherCollection =
             collectionName === "tickets_day1"
-            ? "tickets_day2"
-            : "tickets_day1";
+            ?
+            "tickets_day2"
+            :
+            "tickets_day1";
 
 
 
@@ -387,9 +493,11 @@ async function scanSuccess(text){
                 result.innerHTML =
                 collectionName === "tickets_day1"
 
-                ? "⚠️ このQRコードは<br><b>2日目</b>の整理券です"
+                ?
+                "⚠️ このQRコードは<br><b>2日目</b>の整理券です"
 
-                : "⚠️ このQRコードは<br><b>1日目</b>の整理券です";
+                :
+                "⚠️ このQRコードは<br><b>1日目</b>の整理券です";
 
 
             }
@@ -404,9 +512,12 @@ async function scanSuccess(text){
 
 
 
-            retryBtn.style.display="block";
+            retryBtn.style.display =
+            "block";
 
-            startBtn.style.display="block";
+
+            startBtn.style.display =
+            "block";
 
 
             return;
@@ -416,8 +527,10 @@ async function scanSuccess(text){
 
 
 
+
         const data =
         snap.data();
+
 
 
 
@@ -441,11 +554,15 @@ async function scanSuccess(text){
 
             </b>
 
+
         `;
 
 
 
-        showActions(data.status);
+
+        showActions(
+            data.status
+        );
 
 
 
@@ -461,15 +578,22 @@ async function scanSuccess(text){
         "❌ 読み取りエラー";
 
 
-        retryBtn.style.display="block";
 
-        startBtn.style.display="block";
+        retryBtn.style.display =
+        "block";
+
+
+        startBtn.style.display =
+        "block";
 
 
     }
 
 
 }
+
+
+
 
 
 
@@ -488,17 +612,14 @@ function statusText(status){
             return "受付前";
 
 
-
         case "before":
 
             return "入場前";
 
 
-
         case "entered":
 
             return "入場済み";
-
 
 
         default:
@@ -513,6 +634,9 @@ function statusText(status){
 
 
 
+
+
+
 // =======================
 // Action Buttons
 // =======================
@@ -520,28 +644,37 @@ function statusText(status){
 function showActions(status){
 
 
-
-    actions.style.display="block";
-
-
-
-    action1.style.display="block";
-
-    action2.style.display="block";
+    actions.style.display =
+    "block";
 
 
 
-    action1.onclick=null;
-
-    action2.onclick=null;
-
+    action1.style.display =
+    "block";
 
 
-    // 色クラスリセット
+    action2.style.display =
+    "block";
 
-    action1.className="";
 
-    action2.className="";
+
+    action1.className =
+    "";
+
+
+    action2.className =
+    "";
+
+
+
+    action1.onclick =
+    null;
+
+
+    action2.onclick =
+    null;
+
+
 
 
 
@@ -552,22 +685,33 @@ function showActions(status){
         case "waiting":
 
 
+
             action1.textContent =
             "受付済みにする";
+
 
 
             action2.style.display =
             "none";
 
 
-            action1.onclick=()=>{
 
-                updateStatus("before");
+            action1.onclick =
+            ()=>{
+
+
+                updateStatus(
+                    "before"
+                );
+
 
             };
 
 
+
             break;
+
+
 
 
 
@@ -575,8 +719,10 @@ function showActions(status){
         case "before":
 
 
+
             action1.textContent =
             "入場済みにする";
+
 
 
             action2.textContent =
@@ -584,18 +730,30 @@ function showActions(status){
 
 
 
-            action1.onclick=()=>{
+            action1.onclick =
+            ()=>{
 
-                updateStatus("entered");
+
+                updateStatus(
+                    "entered"
+                );
+
+
+            };
+
+
+
+            action2.onclick =
+            ()=>{
+
+
+                updateStatus(
+                    "waiting"
+                );
+
 
             };
 
-
-            action2.onclick=()=>{
-
-                updateStatus("waiting");
-
-            };
 
 
             break;
@@ -603,19 +761,21 @@ function showActions(status){
 
 
 
+
+
         case "entered":
+
 
 
             action1.textContent =
             "入場前に戻す";
 
 
+
             action2.textContent =
             "受付前に戻す";
 
 
-
-            // 戻すボタンは同じ色にできる
 
             action1.classList.add(
                 "back-btn"
@@ -628,27 +788,41 @@ function showActions(status){
 
 
 
-            action1.onclick=()=>{
+            action1.onclick =
+            ()=>{
 
-                updateStatus("before");
+
+                updateStatus(
+                    "before"
+                );
+
+
+            };
+
+
+
+            action2.onclick =
+            ()=>{
+
+
+                updateStatus(
+                    "waiting"
+                );
+
 
             };
 
-
-            action2.onclick=()=>{
-
-                updateStatus("waiting");
-
-            };
 
 
             break;
+
 
 
     }
 
 
 }
+
 // =======================
 // Update Status
 // =======================
@@ -679,7 +853,10 @@ async function updateStatus(nextStatus){
 
 
 
-        result.style.display="block";
+        result.style.display =
+        "block";
+
+
 
         result.innerHTML =
         "✅ 更新しました";
@@ -704,17 +881,25 @@ async function updateStatus(nextStatus){
 
 
 
+        result.style.display =
+        "block";
+
+
         result.innerHTML =
         "❌ 更新失敗";
 
 
-        retryBtn.style.display="block";
+        retryBtn.style.display =
+        "block";
 
 
     }
 
 
 }
+
+
+
 
 
 
@@ -725,7 +910,8 @@ async function updateStatus(nextStatus){
 async function reset(){
 
 
-    currentId=null;
+    currentId =
+    null;
 
 
 
@@ -737,30 +923,38 @@ async function reset(){
 
 
 
-    retryBtn.style.display="none";
+    retryBtn.style.display =
+    "none";
 
 
 
-    startBtn.style.display="block";
+    startBtn.style.display =
+    "block";
 
 
 
-    result.style.display="block";
+    result.style.display =
+    "none";
 
 
     result.innerHTML =
-    "QRコードを読み取ってください";
+    "";
+
 
 
 }
 
 
 
+
+
+
 // =======================
-// Cancel Button
+// Cancel
 // =======================
 
-cancelBtn.onclick=()=>{
+cancelBtn.onclick =
+()=>{
 
 
     reset();
@@ -770,11 +964,15 @@ cancelBtn.onclick=()=>{
 
 
 
+
+
+
 // =======================
-// Retry Button
+// Retry
 // =======================
 
-retryBtn.onclick=()=>{
+retryBtn.onclick =
+()=>{
 
 
     reset();
@@ -795,11 +993,15 @@ retryBtn.onclick=()=>{
 
 
 
+
+
+
 // =======================
-// Stop Camera Button
+// Stop Camera
 // =======================
 
-stopBtn.onclick=()=>{
+stopBtn.onclick =
+()=>{
 
 
     reset();
