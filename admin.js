@@ -6,6 +6,10 @@ import {
     updateDoc
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
+// =======================
+// Elements
+// =======================
+
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
 
@@ -25,77 +29,88 @@ document.querySelectorAll('input[name="day"]');
 // Variables
 // =======================
 
-// 前回選択した日を復元
-let collectionName =
-localStorage.getItem("selectedDay") ||
-"tickets_day1";
+let collectionName = "tickets_day1";
 
 let scanner = null;
 let currentId = null;
 let scanning = false;
 
 // =======================
-// Day Select
+// Restore Day
 // =======================
 
-dayRadios.forEach(radio=>{
+window.addEventListener("load",()=>{
 
-    if(radio.value===collectionName){
+    const savedDay =
+    localStorage.getItem("selectedDay");
 
-        radio.checked=true;
+    if(savedDay){
+
+        collectionName = savedDay;
 
     }
 
-    radio.addEventListener("change",()=>{
+    dayRadios.forEach(radio=>{
 
-        collectionName=radio.value;
+        radio.checked =
+        radio.value === collectionName;
 
-        localStorage.setItem(
-            "selectedDay",
-            collectionName
-        );
+        radio.addEventListener("change",()=>{
+
+            collectionName = radio.value;
+
+            localStorage.setItem(
+                "selectedDay",
+                collectionName
+            );
+
+        });
 
     });
 
 });
 
 // =======================
-// Start
+// Start Button
 // =======================
 
-startBtn.onclick=()=>{
+startBtn.onclick = ()=>{
 
     startScanner();
 
 };
 
+// =======================
+// Start Camera
+// =======================
+
 async function startScanner(){
 
-    if(scanning)return;
+    if(scanning) return;
 
-    scanning=true;
+    scanning = true;
 
-    reader.innerHTML="";
+    reader.innerHTML = "";
 
-    actions.style.display="none";
-    retryBtn.style.display="none";
+    actions.style.display = "none";
+    retryBtn.style.display = "none";
 
-    result.style.display="none";
+    result.style.display = "none";
 
-    startBtn.style.display="none";
-    stopBtn.style.display="block";
+    startBtn.style.display = "none";
+    stopBtn.style.display = "block";
 
-    const size=Math.min(
-        window.innerWidth*0.9,
+    const size = Math.min(
+        window.innerWidth * 0.9,
         340
     );
 
-    reader.style.display="block";
-    reader.style.visibility="visible";
-    reader.style.width=size+"px";
-    reader.style.height=size+"px";
+    reader.style.display = "block";
+    reader.style.visibility = "visible";
+    reader.style.width = size + "px";
+    reader.style.height = size + "px";
 
-    scanner=new Html5Qrcode("reader");
+    scanner = new Html5Qrcode("reader");
 
     try{
 
@@ -111,8 +126,8 @@ async function startScanner(){
 
                 qrbox:(w,h)=>{
 
-                    const s=Math.floor(
-                        Math.min(w,h)*0.65
+                    const s = Math.floor(
+                        Math.min(w,h) * 0.65
                     );
 
                     return{
@@ -132,25 +147,27 @@ async function startScanner(){
 
         );
 
-    }
-    catch(e){
+    }catch(e){
 
         console.error(e);
 
-        scanning=false;
+        scanning = false;
 
         await closeCamera();
 
-        result.style.display="block";
-
-        result.textContent=
+        result.style.display = "block";
+        result.textContent =
         "❌ カメラを起動できません";
 
-        retryBtn.style.display="block";
+        retryBtn.style.display = "block";
 
     }
 
 }
+
+// =======================
+// Close Camera
+// =======================
 
 async function closeCamera(){
 
@@ -168,20 +185,20 @@ async function closeCamera(){
 
         }catch{}
 
-        scanner=null;
+        scanner = null;
 
     }
 
-    reader.innerHTML="";
+    reader.innerHTML = "";
 
-    reader.style.display="none";
-    reader.style.visibility="hidden";
-    reader.style.width="0";
-    reader.style.height="0";
+    reader.style.display = "none";
+    reader.style.visibility = "hidden";
+    reader.style.width = "0";
+    reader.style.height = "0";
 
-    stopBtn.style.display="none";
+    stopBtn.style.display = "none";
 
-    scanning=false;
+    scanning = false;
 
 }
 
@@ -203,7 +220,7 @@ async function scanSuccess(text){
 
     try{
 
-        let snap = await getDoc(
+        const snap = await getDoc(
             doc(
                 db,
                 collectionName,
@@ -211,7 +228,6 @@ async function scanSuccess(text){
             )
         );
 
-        // 選択した日のコレクションに無い
         if(!snap.exists()){
 
             const otherCollection =
@@ -241,8 +257,8 @@ async function scanSuccess(text){
 
             }
 
-            retryBtn.style.display = "block";
             startBtn.style.display = "block";
+            retryBtn.style.display = "block";
 
             return;
 
@@ -270,8 +286,8 @@ async function scanSuccess(text){
         result.innerHTML =
             "❌ 読み取りエラー";
 
-        retryBtn.style.display = "block";
         startBtn.style.display = "block";
+        retryBtn.style.display = "block";
 
     }
 
@@ -323,29 +339,54 @@ function showActions(status){
         case "waiting":
 
             action1.textContent = "受付済みにする";
+
             action2.style.display = "none";
 
-            action1.onclick = () => updateStatus("before");
+            action1.onclick = () => {
+
+                updateStatus("before");
+
+            };
 
             break;
 
         case "before":
 
             action1.textContent = "入場済みにする";
+
             action2.textContent = "受付前に戻す";
 
-            action1.onclick = () => updateStatus("entered");
-            action2.onclick = () => updateStatus("waiting");
+            action1.onclick = () => {
+
+                updateStatus("entered");
+
+            };
+
+            action2.onclick = () => {
+
+                updateStatus("waiting");
+
+            };
 
             break;
 
         case "entered":
 
             action1.textContent = "入場前に戻す";
+
             action2.textContent = "受付前に戻す";
 
-            action1.onclick = () => updateStatus("before");
-            action2.onclick = () => updateStatus("waiting");
+            action1.onclick = () => {
+
+                updateStatus("before");
+
+            };
+
+            action2.onclick = () => {
+
+                updateStatus("waiting");
+
+            };
 
             break;
 
@@ -362,20 +403,23 @@ async function updateStatus(nextStatus){
     try{
 
         await updateDoc(
+
             doc(
                 db,
                 collectionName,
                 currentId
             ),
+
             {
                 status: nextStatus
             }
+
         );
 
         actions.style.display = "none";
 
         result.innerHTML =
-            "✅ 更新しました";
+        "✅ 更新しました";
 
         setTimeout(async()=>{
 
@@ -389,9 +433,10 @@ async function updateStatus(nextStatus){
         console.error(e);
 
         result.innerHTML =
-            "❌ 更新失敗";
+        "❌ 更新失敗";
 
-        retryBtn.style.display = "block";
+        retryBtn.style.display =
+        "block";
 
     }
 
@@ -425,7 +470,7 @@ async function reset(){
 
     result.style.display = "block";
     result.innerHTML =
-        "QRコードを読み取ってください";
+    "QRコードを読み取ってください";
 
 }
 
@@ -433,13 +478,13 @@ async function reset(){
 // Buttons
 // =======================
 
-cancelBtn.onclick = async ()=>{
+cancelBtn.onclick = async()=>{
 
     await reset();
 
 };
 
-retryBtn.onclick = async ()=>{
+retryBtn.onclick = async()=>{
 
     await reset();
 
@@ -451,7 +496,7 @@ retryBtn.onclick = async ()=>{
 
 };
 
-stopBtn.onclick = async ()=>{
+stopBtn.onclick = async()=>{
 
     await closeCamera();
 
@@ -463,6 +508,6 @@ stopBtn.onclick = async ()=>{
 
     result.style.display = "block";
     result.innerHTML =
-        "QRコードを読み取ってください";
+    "QRコードを読み取ってください";
 
 };
