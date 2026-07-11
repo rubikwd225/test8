@@ -18,8 +18,10 @@ const reader = document.getElementById("reader");
 const result = document.getElementById("result");
 
 const actions = document.getElementById("actions");
+
 const action1 = document.getElementById("action1");
 const action2 = document.getElementById("action2");
+
 const cancelBtn = document.getElementById("cancelBtn");
 const retryBtn = document.getElementById("retryBtn");
 
@@ -35,6 +37,7 @@ let collectionName =
 localStorage.getItem("selectedDay")
 || "tickets_day1";
 
+
 let scanner = null;
 
 let currentId = null;
@@ -48,13 +51,18 @@ let scanning = false;
 
 dayRadios.forEach(radio=>{
 
+
     radio.checked =
     radio.value === collectionName;
 
 
+
     radio.addEventListener("change",()=>{
 
-        collectionName = radio.value;
+
+        collectionName =
+        radio.value;
+
 
 
         localStorage.setItem(
@@ -65,41 +73,50 @@ dayRadios.forEach(radio=>{
 
     });
 
+
 });
+
 
 
 // =======================
 // Button Control
 // =======================
 
-function hideAllButtons(){
+function hideActions(){
 
-    actions.style.display = "none";
-
-    action1.style.display = "none";
-    action2.style.display = "none";
-
-    retryBtn.style.display = "none";
-
-    stopBtn.style.display = "none";
+    actions.style.display="none";
 
 
-    action1.onclick = null;
-    action2.onclick = null;
+    action1.style.display="none";
 
-}
+    action2.style.display="none";
 
 
-function showStartButton(){
+    action1.textContent="";
 
-    startBtn.style.display = "block";
+    action2.textContent="";
+
+
+    action1.onclick=null;
+
+    action2.onclick=null;
 
 }
 
 
-function showCameraButton(){
 
-    stopBtn.style.display = "block";
+function resetButtons(){
+
+    hideActions();
+
+
+    retryBtn.style.display="none";
+
+
+    stopBtn.style.display="none";
+
+
+    startBtn.style.display="block";
 
 }
 
@@ -108,7 +125,7 @@ function showCameraButton(){
 // Start
 // =======================
 
-startBtn.onclick = ()=>{
+startBtn.onclick=()=>{
 
     startScanner();
 
@@ -116,44 +133,51 @@ startBtn.onclick = ()=>{
 
 
 
+// =======================
+// Camera Start
+// =======================
+
 async function startScanner(){
 
-    if(scanning) return;
+
+    if(scanning)
+    return;
 
 
-    scanning = true;
+
+    scanning=true;
 
 
-    hideAllButtons();
+
+    resetButtons();
 
 
-    startBtn.style.display = "none";
 
-    showCameraButton();
+    startBtn.style.display="none";
 
-
-    result.style.display = "none";
+    stopBtn.style.display="block";
 
 
-    reader.innerHTML = "";
+    result.style.display="none";
+
+
+    reader.innerHTML="";
 
 
     const size =
     Math.min(
-        window.innerWidth * 0.9,
+        window.innerWidth*0.9,
         340
     );
 
 
-    reader.style.display = "block";
+    reader.style.display="block";
 
-    reader.style.visibility = "visible";
+    reader.style.visibility="visible";
 
-    reader.style.width =
-    size + "px";
+    reader.style.width=size+"px";
 
-    reader.style.height =
-    size + "px";
+    reader.style.height=size+"px";
 
 
 
@@ -177,21 +201,20 @@ async function startScanner(){
                 fps:10,
 
 
-                qrbox:(width,height)=>{
+                qrbox:(w,h)=>{
 
 
-                    const qrSize =
+                    const s =
                     Math.floor(
-                        Math.min(width,height)
-                        *0.65
+                        Math.min(w,h)*0.65
                     );
 
 
-                    return {
+                    return{
 
-                        width:qrSize,
+                        width:s,
 
-                        height:qrSize
+                        height:s
 
                     };
 
@@ -211,7 +234,6 @@ async function startScanner(){
         );
 
 
-
     }
     catch(e){
 
@@ -224,14 +246,11 @@ async function startScanner(){
 
         result.style.display="block";
 
-        result.innerHTML =
+        result.innerHTML=
         "❌ カメラを起動できません";
 
 
         retryBtn.style.display="block";
-
-
-        showStartButton();
 
 
     }
@@ -242,7 +261,7 @@ async function startScanner(){
 
 
 // =======================
-// Close Camera
+// Camera Close
 // =======================
 
 async function closeCamera(){
@@ -301,22 +320,29 @@ async function closeCamera(){
 
 async function scanSuccess(text){
 
-    if(!scanning) return;
+
+    if(!scanning)
+    return;
+
 
 
     await closeCamera();
 
 
+
     currentId = text;
 
 
-    result.style.display = "block";
+
+    result.style.display="block";
+
 
 
     try{
 
 
-        const snap = await getDoc(
+        const snap =
+        await getDoc(
 
             doc(
                 db,
@@ -328,7 +354,9 @@ async function scanSuccess(text){
 
 
 
-        // 選択した日と違う場合
+        // =======================
+        // 別日のQRチェック
+        // =======================
 
         if(!snap.exists()){
 
@@ -340,7 +368,8 @@ async function scanSuccess(text){
 
 
 
-            const otherSnap = await getDoc(
+            const otherSnap =
+            await getDoc(
 
                 doc(
                     db,
@@ -363,8 +392,8 @@ async function scanSuccess(text){
                 : "⚠️ このQRコードは<br><b>1日目</b>の整理券です";
 
 
-
-            }else{
+            }
+            else{
 
 
                 result.innerHTML =
@@ -377,14 +406,13 @@ async function scanSuccess(text){
 
             retryBtn.style.display="block";
 
-            showStartButton();
+            startBtn.style.display="block";
 
 
             return;
 
 
         }
-
 
 
 
@@ -407,8 +435,10 @@ async function scanSuccess(text){
 
             現在：
 
-            <b>
-            ${statusText(data.status)}
+            <b class="status-${data.status}">
+
+                ${statusText(data.status)}
+
             </b>
 
         `;
@@ -431,17 +461,16 @@ async function scanSuccess(text){
         "❌ 読み取りエラー";
 
 
-
         retryBtn.style.display="block";
 
-        showStartButton();
-
+        startBtn.style.display="block";
 
 
     }
 
 
 }
+
 
 
 // =======================
@@ -451,28 +480,33 @@ async function scanSuccess(text){
 function statusText(status){
 
 
-    if(status==="waiting"){
+    switch(status){
 
-        return "受付前";
+
+        case "waiting":
+
+            return "受付前";
+
+
+
+        case "before":
+
+            return "入場前";
+
+
+
+        case "entered":
+
+            return "入場済み";
+
+
+
+        default:
+
+            return "不明";
+
 
     }
-
-
-    if(status==="before"){
-
-        return "入場前";
-
-    }
-
-
-    if(status==="entered"){
-
-        return "入場済み";
-
-    }
-
-
-    return "不明";
 
 
 }
@@ -490,6 +524,7 @@ function showActions(status){
     actions.style.display="block";
 
 
+
     action1.style.display="block";
 
     action2.style.display="block";
@@ -502,102 +537,112 @@ function showActions(status){
 
 
 
-    if(status==="waiting"){
+    // 色クラスリセット
 
+    action1.className="";
 
+    action2.className="";
 
-        action1.textContent =
-        "受付済みにする";
 
 
+    switch(status){
 
-        action2.style.display =
-        "none";
 
 
+        case "waiting":
 
-        action1.onclick=()=>{
 
+            action1.textContent =
+            "受付済みにする";
 
-            updateStatus("before");
 
+            action2.style.display =
+            "none";
 
-        };
 
+            action1.onclick=()=>{
 
+                updateStatus("before");
 
-    }
+            };
 
 
+            break;
 
-    if(status==="before"){
 
 
 
-        action1.textContent =
-        "入場済みにする";
+        case "before":
 
 
-        action2.textContent =
-        "受付前に戻す";
+            action1.textContent =
+            "入場済みにする";
 
 
+            action2.textContent =
+            "受付前に戻す";
 
-        action1.onclick=()=>{
 
 
-            updateStatus("entered");
+            action1.onclick=()=>{
 
+                updateStatus("entered");
 
-        };
+            };
 
 
+            action2.onclick=()=>{
 
-        action2.onclick=()=>{
+                updateStatus("waiting");
 
+            };
 
-            updateStatus("waiting");
 
+            break;
 
-        };
 
 
 
-    }
+        case "entered":
 
 
+            action1.textContent =
+            "入場前に戻す";
 
-    if(status==="entered"){
 
+            action2.textContent =
+            "受付前に戻す";
 
 
-        action1.textContent =
-        "入場前に戻す";
 
+            // 戻すボタンは同じ色にできる
 
-        action2.textContent =
-        "受付前に戻す";
+            action1.classList.add(
+                "back-btn"
+            );
 
 
+            action2.classList.add(
+                "back-btn"
+            );
 
-        action1.onclick=()=>{
 
 
-            updateStatus("before");
+            action1.onclick=()=>{
 
+                updateStatus("before");
 
-        };
+            };
 
 
+            action2.onclick=()=>{
 
-        action2.onclick=()=>{
+                updateStatus("waiting");
 
+            };
 
-            updateStatus("waiting");
 
-
-        };
-
+            break;
 
 
     }
@@ -610,7 +655,9 @@ function showActions(status){
 
 async function updateStatus(nextStatus){
 
+
     try{
+
 
         await updateDoc(
 
@@ -621,13 +668,15 @@ async function updateStatus(nextStatus){
             ),
 
             {
-                status: nextStatus
+                status:nextStatus
             }
 
         );
 
 
-        hideAllButtons();
+
+        hideActions();
+
 
 
         result.style.display="block";
@@ -639,7 +688,9 @@ async function updateStatus(nextStatus){
 
         setTimeout(()=>{
 
+
             reset();
+
 
         },1000);
 
@@ -656,10 +707,12 @@ async function updateStatus(nextStatus){
         result.innerHTML =
         "❌ 更新失敗";
 
+
         retryBtn.style.display="block";
 
 
     }
+
 
 }
 
@@ -675,15 +728,21 @@ async function reset(){
     currentId=null;
 
 
+
     await closeCamera();
 
 
 
-    hideAllButtons();
+    hideActions();
+
+
+
+    retryBtn.style.display="none";
 
 
 
     startBtn.style.display="block";
+
 
 
     result.style.display="block";
@@ -698,7 +757,7 @@ async function reset(){
 
 
 // =======================
-// Cancel
+// Cancel Button
 // =======================
 
 cancelBtn.onclick=()=>{
@@ -712,7 +771,7 @@ cancelBtn.onclick=()=>{
 
 
 // =======================
-// Retry
+// Retry Button
 // =======================
 
 retryBtn.onclick=()=>{
@@ -721,10 +780,12 @@ retryBtn.onclick=()=>{
     reset();
 
 
+
     setTimeout(()=>{
 
 
         startScanner();
+
 
 
     },200);
@@ -735,7 +796,7 @@ retryBtn.onclick=()=>{
 
 
 // =======================
-// Stop Camera
+// Stop Camera Button
 // =======================
 
 stopBtn.onclick=()=>{

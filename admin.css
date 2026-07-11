@@ -254,3 +254,23 @@ button:hover{
     cursor:pointer;
 
 }
+
+.status-entered{
+
+    color:#e53935;
+
+}
+
+
+.status-before{
+
+    color:#00c853;
+
+}
+
+
+.status-waiting{
+
+    color:#00c853;
+
+}
