@@ -859,7 +859,7 @@ async function updateStatus(nextStatus){
 
 
         result.innerHTML =
-        "✅ 更新しました";
+        "✅更新しました";
 
 
 
